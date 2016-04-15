@@ -35,20 +35,36 @@
 
     <section class="main-content">
       <h3><a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gajago 딜 현황판</h3>
-      <p>
-        준비중: <span id="count-ready">-</span> 개<br>
-        판매중: <span id="count-in-sale">-</span> 개<br>
-        종료: <span id="count-end">-</span> 개<br>
-        일시품절: <span id="count-m-sold-out">-</span> 개<br>
-        품절: <span id="count-sold-out">-</span> 개<br>
-        전체: <span id="count-total">-</span> 개
-      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>준비중</th>
+            <th>판매중</th>
+            <th>종료</th>
+            <th>일시품절</th>
+            <th>품절</th>
+            <th>전체</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td text-align="right"><span id="count-ready">-</span></td>
+            <td text-align="right"><span id="count-in-sale">-</span></td>
+            <td text-align="right"><span id="count-end">-</span></td>
+            <td text-align="right"><span id="count-m-sold-out">-</span></td>
+            <td text-align="right"><span id="count-sold-out">-</span></td>
+            <td text-align="right"><span id="count-total">-</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
 
       <div class="map_wrap">
         <div id="map" style="height:900px;"></div>
         <div class="custom_typecontrol radius_border">
-          <span id="btnRoadmap" class="selected_btn" onclick="setMapType('roadmap')">지도</span>
-          <span id="btnSkyview" class="btn" onclick="setMapType('skyview')">스카이뷰</span>
+          <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
+          <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
         </div>
         <div class="custom_zoomcontrol radius_border">
           <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
@@ -78,12 +94,12 @@
           var skyviewControl = document.getElementById('btnSkyview');
           if (maptype === 'roadmap') {
               map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
-              roadmapControl.className = 'selected_btn';
-              skyviewControl.className = 'btn';
+              roadmapControl.className = 'selected-btn';
+              skyviewControl.className = 'map-btn';
           } else {
               map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
-              skyviewControl.className = 'selected_btn';
-              roadmapControl.className = 'btn';
+              skyviewControl.className = 'selected-btn';
+              roadmapControl.className = 'map-btn';
           }
       }
 
