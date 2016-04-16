@@ -9,7 +9,10 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <style type="text/css">
+      * { box-sizing: content-box; }
       .page-header{ padding: 20px; }
+      .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
       .map_wrap {position:relative;overflow:hidden;width:100%;}
       .radius_border{border:1px solid #919191;border-radius:5px;}
       .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
@@ -128,6 +131,7 @@
       */
 
       var markers = [];
+      var infoWindows = [];
       var selectedInfoWindow;
 
       function loadMap(){
@@ -138,11 +142,19 @@
           });
           markers = [];
         }
+        if (!_.isEmpty(infoWindows)) {
+          _.each(infoWindows, function(infoWindow){
+            infoWindow.setMap(null);
+            infoWindow = null;
+          });
+          infoWindows = [];
+          selectedInfoWindow = null;
+        }
 
         var checkedStatuses = $('#form-chart').serializeArray();
 
         $.get('https://admin.thegajago.com/api/v1/dashboard/deals', function(deals){
-        //$.get('http://www-dev.thegajago.com:6442//api/v1/dashboard/deals', function(deals){
+        // $.get('http://www-dev.thegajago.com:6442//api/v1/dashboard/deals', function(deals){
           var readyCount    = 0;
           var inSaleCount   = 0;
           var endCount      = 0;
@@ -196,10 +208,11 @@
 
         var infoWindow = new daum.maps.InfoWindow({
           'position': dealPosition,
-          'content' : ('<div style="padding:5px;">' +
+          'content' : ('<div class="ellipsis">' +
             '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
             deal.id + ' ' +deal.dealNm + '</a></div>')
         });
+        infoWindows.push(infoWindow);
 
         daum.maps.event.addListener(marker, 'click', function() {
           if (!_.isEmpty(selectedInfoWindow)) {
