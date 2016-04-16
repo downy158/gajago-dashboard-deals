@@ -36,14 +36,15 @@
     <section class="main-content">
       <h3><a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gajago 딜 현황판</h3>
 
+      <form id="form-chart">
       <table>
         <thead>
           <tr>
-            <th>준비중</th>
-            <th>판매중</th>
-            <th>종료</th>
-            <th>일시품절</th>
-            <th>품절</th>
+            <th><label><input type="checkbox" name="status"         value="READY"      /> 준비중</label></th>
+            <th><label><input type="checkbox" name="status" checked value="IN_SALE"    /> 판매중</label></th>
+            <th><label><input type="checkbox" name="status"         value="END"        /> 종료</label></th>
+            <th><label><input type="checkbox" name="status" checked value="M_SOLD_OUT" /> 일시품절</label></th>
+            <th><label><input type="checkbox" name="status" checked value="SOLD_OUT"   /> 품절</label></th>
             <th>전체</th>
           </tr>
         </thead>
@@ -58,6 +59,7 @@
           </tr>
         </tbody>
       </table>
+      </form>
 
       <p>
         # 마커를 클릭하면 딜명을 볼 수 있습니다.<br>
@@ -88,6 +90,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4"></script>
     <script type="text/javascript">
+      $('[name="status"]').change(loadMap);
+
       var map = new daum.maps.Map(document.getElementById("map"), {
           center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
           level: 12
@@ -135,7 +139,10 @@
           markers = [];
         }
 
+        var checkedStatuses = $('#form-chart').serializeArray();
+
         $.get('https://admin.thegajago.com/api/v1/dashboard/deals', function(deals){
+        //$.get('http://www-dev.thegajago.com:6442//api/v1/dashboard/deals', function(deals){
           var readyCount    = 0;
           var inSaleCount   = 0;
           var endCount      = 0;
@@ -143,29 +150,9 @@
           var soldOutCount  = 0;
 
           _.each(deals, function(deal){
-            var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
-            var marker = new daum.maps.Marker({
-              'position': dealPosition,
-              'title'   : deal.dealNm
-            });
-            marker.setMap(map);
-            markers.push(marker);
-
-            var infoWindow = new daum.maps.InfoWindow({
-              'position': dealPosition,
-              'content' : ('<div style="padding:5px;">' +
-                '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
-                deal.id + ' ' +deal.dealNm + '</a></div>')
-            });
-
-            daum.maps.event.addListener(marker, 'click', function() {
-              if (!_.isEmpty(selectedInfoWindow)) {
-                selectedInfoWindow.close();
-              }
-
-              infoWindow.open(map, marker);
-              selectedInfoWindow = infoWindow;
-            });
+            if (_.findIndex(checkedStatuses, { value: deal.status }) > -1) {
+              markingDeal(deal);
+            }
 
             switch (deal.status) {
               case 'READY':
@@ -194,9 +181,34 @@
           $('#count-m-sold-out').text(mSoldOutCount);
           $('#count-sold-out').text(soldOutCount);
           $('#count-total').text(deals.length);
-
         });
 
+      }
+
+      function markingDeal(deal) {
+        var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
+        var marker = new daum.maps.Marker({
+          'position': dealPosition,
+          'title'   : deal.dealNm
+        });
+        marker.setMap(map);
+        markers.push(marker);
+
+        var infoWindow = new daum.maps.InfoWindow({
+          'position': dealPosition,
+          'content' : ('<div style="padding:5px;">' +
+            '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
+            deal.id + ' ' +deal.dealNm + '</a></div>')
+        });
+
+        daum.maps.event.addListener(marker, 'click', function() {
+          if (!_.isEmpty(selectedInfoWindow)) {
+            selectedInfoWindow.close();
+          }
+
+          infoWindow.open(map, marker);
+          selectedInfoWindow = infoWindow;
+        });
       }
     </script>
   </body>
