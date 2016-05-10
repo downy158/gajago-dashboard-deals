@@ -43,11 +43,11 @@
       <table>
         <thead>
           <tr>
-            <th><label><input type="checkbox" name="status"         value="READY"      /> 준비중</label></th>
-            <th><label><input type="checkbox" name="status" checked value="IN_SALE"    /> 판매중</label></th>
-            <th><label><input type="checkbox" name="status"         value="END"        /> 종료</label></th>
-            <th><label><input type="checkbox" name="status" checked value="M_SOLD_OUT" /> 일시품절</label></th>
-            <th><label><input type="checkbox" name="status" checked value="SOLD_OUT"   /> 품절</label></th>
+            <th><label><input type="checkbox" name="dealStatus"         value="READY"      /> 준비중</label></th>
+            <th><label><input type="checkbox" name="dealStatus" checked value="IN_SALE"    /> 판매중</label></th>
+            <th><label><input type="checkbox" name="dealStatus"         value="END"        /> 종료</label></th>
+            <th><label><input type="checkbox" name="dealStatus" checked value="M_SOLD_OUT" /> 일시품절</label></th>
+            <th><label><input type="checkbox" name="dealStatus" checked value="SOLD_OUT"   /> 품절</label></th>
             <th>전체</th>
           </tr>
         </thead>
@@ -93,7 +93,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4"></script>
     <script type="text/javascript">
-      $('[name="status"]').change(loadMap);
+      $('[name="dealStatus"]').change(loadMap);
 
       var map = new daum.maps.Map(document.getElementById("map"), {
           center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
@@ -162,7 +162,7 @@
           var soldOutCount  = 0;
 
           _.each(deals, function(deal){
-            if (_.findIndex(checkedStatuses, { value: deal.status }) > -1) {
+            if (_.findIndex(checkedStatuses, { value: deal.dealStatus }) > -1) {
               markingDeal(deal);
             }
 
