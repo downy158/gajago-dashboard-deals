@@ -1,4 +1,17 @@
+.list-box ul {
+    border-top: 1px solid lightblue;
+    background-color: #ececec;
+}
+
+.list-box li {
+    clear: both;
+    overflow: auto;
+    margin-bottom: 6px;
+    background-color: white;
+}
+
 .list-box li .thumb {
+    display: inline-block;
     width: 120px;
     height: 90px;
     border-radius: 0px;
@@ -11,16 +24,8 @@
     margin-right: 12px;
 }
 
-.list-box li {
-    clear: both;
-    overflow: auto;
-}
-
-.list-box li .thumb,
 .list-box li .deal-name,
-.list-box li .deal-desc,
-.list-box li .deal-distance,
-.list-box li .deal-price {
+.list-box li .deal-desc {
     display: inline-block;
 }
 
