@@ -17,14 +17,16 @@
     <style type="text/css">
       * { -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+      }
       .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
       ul {list-style: none;}
       ul.LBox		{ padding:0; border:0;}
       .LBox:after	{ content:" "; display:block; clear:both;}
       .LBox > li	{ float:left; padding:0; border:0;}
       .LBox > li.li_R	{ float:right; }
-
+      .none { display:none }
 
 
       /*tab*/
@@ -74,7 +76,12 @@
           text-align: center;
           background-color:#F7F7F7;
         }
-      /*map */
+        .list-box {
+          padding: 0.5em;
+        }
+      .list-box ul { padding: 0; margin: 0}
+      .list-box li { border-bottom:1px solid lightblue; }
+        /*map */
       .map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
       .radius_border{border:1px solid #919191;border-radius:5px;}
       .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
@@ -103,13 +110,14 @@
     </nav>
   </header>
   <div class="">
-    <section class="filter-box">
-      <div class="menu">
+    <div class="menu">
 
-      </div>
+    </div>
+    <section class="filter-box">
       <div class="list-box">
 
       </div>
+      <button class="mapview">지도로 보기</button>
     </section>
     <section class="map-box">
 
@@ -124,7 +132,7 @@
           <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
         </div>
       </div>
-
+      <button class="listview">목록보기</button>
     </section>
   </div>
   <footer class="site-footer">
@@ -135,12 +143,34 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="./menu_filter.js"></script>
-    <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4"></script>
+    <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
 
     <script type="text/javascript">
+      /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
 
-      /**@@@ menu @@@@@@@@@@@@@@@@@@@*/
-      /** start ************************************************/
+      $('.menu-tab a').bind("click",function(e){
+        $('.menu-tab li').removeClass('active');
+        $(this).parent().addClass('active');
+        if ($(this).attr('data-href') == "area") {
+          $('.filter-box').removeClass('none');
+          $('.menu').empty();
+          defaultFilter ();
+        } else {
+          $('.filter-box').addClass('none');
+
+        }
+        e.preventDefault();
+      })
+
+      //지도로 보기
+      $('.mapview').bind("click",function(e){
+        $('.filter-box').addClass('none');
+        $('.map-box').removeClass('none');
+        e.preventDefault();
+      })
+
+      /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
+      /** menu setting ************************************************/
       function defaultFilter () {
         var html = "";
         html += "<ul class='LBox'>"
@@ -148,8 +178,11 @@
           html += '<li><a class="depth1menu" data-href="'+ items.fullCode+'"><h2>'+ items.name +'</h2></a></li>';
         });
         html += "</ul>"
+        $('.list-box').addClass('none');
         $('.menu').empty();
         $('.menu').append(html);
+
+        //event
         $('.depth1menu').bind("click",function(e){
           console.log($(this).attr('data-href') );
           subFillter ( $(this).attr('data-href') );
@@ -175,9 +208,13 @@
         $('.menu').empty();//메뉴삭제
         $('.menu').append(html);//depth2 메뉴추가
 
-        $('.depth2menu').bind("click",function(e){//맵불러오기
+        //event
+        $('.depth2menu').bind("click",function(e){//deal목록 생성
           var code = $(this).attr('data-href');
+          $(this).parent().parent().find('li').removeClass('active');
+          $(this).parent().addClass('active');
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
+            makeDealList( deals );
             loadMap( deals );
           })
           e.preventDefault();
@@ -185,18 +222,65 @@
 
         $('.backmenu').bind("click",function(e){//매뉴 depth1 로 돌아가기
           defaultFilter ();
+          $('.list-box').empty();
           e.preventDefault();
         });
       }
 
+      /** make list *********************************************/
+      function makeDealList ( deals ) {
+        var html = "<ul>";
+        _.each(deals.list, function(item,key2){
+          html += '<li><a href="https://www.thegajago.com/deals/'+item.id+'" target="_new">' + item.dealNm +'</a><li>';
+        });
+        html += "</ul>";
+        $('.list-box').removeClass('none')
+        $('.list-box').empty();
+        $('.list-box').append(html);
+      }
+
       /** start ************************************************/
       defaultFilter ();
+
+      /**@@@ 내주변  @@@@@@@@@@@@@@@@@@@*/
+      function myareaDeals() {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            callBack({
+              position: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              }
+            });
+            console.log( position )
+          }, function (err) {
+            toast.push({
+              theme:"basic",
+              msg:'사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.'
+            });
+            callBack({
+              error: '[code:' + err.code + '] ' + err.message
+            });
+          }, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 600000
+          });
+        }
+      }
+
+      //event
 
 
       /**@@@ map @@@@@@@@@@@@@@@@@@@*/
       var map = new daum.maps.Map(document.getElementById("map"), {
           center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
           level: 11
+      });
+
+      var clusterer = new daum.maps.MarkerClusterer({
+        map: map,
+        markers: markers
       });
 
        //map 타입
@@ -227,9 +311,11 @@
       var selectedInfoWindow;
 
       function loadMap( deals ){
+        $('.mapview').removeClass('none')
         map.setLevel(11);//레벨 기본셋팅
         map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
         map.setDraggable(true);
+        clusterer.clear();
         _.each(deals.list, function(deal){
             markingDeal(deal);
         });
