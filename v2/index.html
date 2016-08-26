@@ -248,6 +248,7 @@
 
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
               loadDeals = deals;
+              markingDeal(loadDeals);
               loadMap( loadDeals );
           })
           e.preventDefault();
