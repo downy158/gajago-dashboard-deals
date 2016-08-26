@@ -7,80 +7,90 @@
 
     <title>Gajago-dashboard-deals by leisureq</title>
 
-    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
     <!-- custom -->
     <style type="text/css">
+      html,body { height:100%; }
       * { -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
         -webkit-overflow-scrolling: touch;
       }
       .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
       ul {list-style: none;}
+      ul,li { padding: 0; margin: 0}
+      a:hover, a:active { text-decoration:none }
       ul.LBox		{ padding:0; border:0;}
       .LBox:after	{ content:" "; display:block; clear:both;}
       .LBox > li	{ float:left; padding:0; border:0;}
       .LBox > li.li_R	{ float:right; }
       .none { display:none }
 
+      .viewbtn {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        width: 60px;
+        height: 60px;
+        background: rgba(0,0,0,0.5);
+        border-radius:50%;
+      }
+
 
       /*tab*/
-      .menu-tab { width:98%; margin: 0 auto;margin-bottom: -1px }
+      .menu-tab { margin-bottom: -1px }
       .menu-tab li {
         display: block;
         width:50%;
-        border:1px solid lightblue;
-        background-color:#F7F7F7;
+        padding: 0.8em 0;
+        box-sizing: content-box;
+        background-color:#FFF;
       }
-      .menu-tab li.active { border-bottom-color : #FFF ; background:#FFF ;}
+      .menu-tab li.active { border-bottom:4px solid #1F93FF; color: #1F93FF;}
       .menu-tab a {
         display: block;
         width: 100%;
-        padding: 1em 0;
-        text-align: center;
+        text-align: center; border-bottom:#1F93FF;
       }
-      /*menu ui*/
-      .menu { width:100%; margin: 0 auto; padding-left:5px;   }
-      .menu li {
-        width:33.3333%;
-        border:1px solid lightblue;
-        margin-left:-1px ; margin-top: -1px;
-        text-align: center;
-      }
-      .menu a {
-        position: relative;
-        display: block;
-        height:4em ;
-        padding: 0.1em 0;
-      }
-      .menu a h2 {
-        position: absolute;
-        top:50%;
-        left: 0;
-        right: 0;
-        transform: translate(0%,-50%);
-        padding: 0;
-        margin: 0;
-        font-size:1em
-      }
-      a.depth2menu,a.backmenu { font-size:0.8em }
 
       /*layout*/
-        .herder {
-          border-bottom:1px solid lightblue;
-          text-align: center;
-          background-color:#F7F7F7;
-        }
-        .list-box {
-          padding: 0.5em;
-        }
-      .list-box ul { padding: 0; margin: 0}
-      .list-box li { border-bottom:1px solid lightblue; }
+      .herder {
+        padding: 0; margin: 0;
+        text-align: center;
+        background-color:#FFF;
+      }
+      .herder-title { margin: 0; padding:0.2em;  font-size:1.5em; color:#FFF; text-align: left; background:#1F93FF }
+
+      /*filter-box ui*/
+      .menu { display:table;  width:100%; height:100%;  margin: 0 auto; text-align: left; border-bottom:1px solid #D8D8D8; }
+      .menu > li { display:table-cell; padding: 0; margin: 0; text-align: center; }
+      .menu a { display: block; padding: 1em 0; }
+      .filter-box-msg {  margin-top:-2px; padding:0.8em 0;  color:#FFF;   text-align: center; background:#9F9F9F }
+      .depth1menu {
+        width:40%;
+        padding: 0.5em 0.1em;
+        border-right:1px solid #D8D8D8;
+      }
+      .depth1menu a { color:#469FFF }
+      .depth1menu .active a { color:#FFF;  background-color:#1F93FF }
+      .depth2menu {
+        width:60%;
+        background: #F2F2F2;
+      }
+      .depth2menu li { padding: 0 1.5em; text-align: left }
+      .depth2menu a {
+        color: #8A8A8A;
+        border-bottom:1px solid #D0D0D0 ;
+      }
+      .depth2menu li:hover,.depth2menu li:active {
+        background: #DFDFDF;
+      }
+      .depth2menu li:hover a,.depth2menu li:active a {  color: #000}
+
+
         /*map */
       .map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
       .radius_border{border:1px solid #919191;border-radius:5px;}
@@ -99,47 +109,58 @@
     </style>
   </head>
   <body>
-  <header class="herder">
-    <h1 class="project-name">Gajago 딜 현황판</h1>
-    <h3><a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a></h3>
-    <nav>
-      <ul class="LBox menu-tab">
-        <li class="active"><a data-href="area">지역필터</a></li>
-        <li><a data-href="myarea">내주변</a></li>
-      </ul>
-    </nav>
-  </header>
-  <div class="">
-    <div class="menu">
+  <div class="Wrap">
+    <header class="herder">
+      <h1 class="herder-title">Gajago 딜 현황판</h1>
+      <nav>
+        <ul class="LBox menu-tab">
+          <li class="active"><a data-href="area">지역</a></li>
+          <li><a data-href="myarea">내주변</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="content">
+      <!-- menu -->
+      <section class="filter-box">
+        <div class="filter-box-msg">원하시는 지역을 선택하세요</div>
+        <ul class="menu">
+          <li class="depth1menu">
 
+          </li>
+          <li class="depth2menu">
+
+          </li>
+        </ul>
+      </section>
+
+      <!-- deal list -->
+      <section class="filter-box none">
+        <div class="list-box">
+
+        </div>
+      </section>
+
+      <!-- map -->
+      <section class="map-box none">
+        <div class="map_wrap">
+          <div id="map" style="height:400px;"></div>
+          <div class="custom_typecontrol radius_border">
+            <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
+            <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
+          </div>
+          <div class="custom_zoomcontrol radius_border">
+            <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
+            <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
+          </div>
+        </div>
+      </section>
+      <button class="viewbtn btn-mapview none">지도로 보기</button>
+      <button class="viewbtn btn-listview none">목록보기</button>
     </div>
-    <section class="filter-box">
-      <div class="list-box">
+    <footer class="site-footer">
 
-      </div>
-      <button class="mapview">지도로 보기</button>
-    </section>
-    <section class="map-box">
-
-      <div class="map_wrap">
-        <div id="map" style="height:400px;"></div>
-        <div class="custom_typecontrol radius_border">
-          <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
-          <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
-        </div>
-        <div class="custom_zoomcontrol radius_border">
-          <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-          <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
-        </div>
-      </div>
-      <button class="listview">목록보기</button>
-    </section>
+    </footer>
   </div>
-  <footer class="site-footer">
-    <span class="site-footer-owner"><a href="https://github.com/leisureq/gajago-dashboard-deals">Gajago-dashboard-deals</a> is maintained by <a href="https://github.com/leisureq">leisureq</a>.</span>
-    <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-  </footer>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="./menu_filter.js"></script>
@@ -151,40 +172,43 @@
       $('.menu-tab a').bind("click",function(e){
         $('.menu-tab li').removeClass('active');
         $(this).parent().addClass('active');
-        if ($(this).attr('data-href') == "area") {
-          $('.filter-box').removeClass('none');
-          $('.menu').empty();
-          defaultFilter ();
-        } else {
-          $('.filter-box').addClass('none');
+        if ($(this).attr('data-href') == "area") {//지역
+
+        } else {//내주변
 
         }
         e.preventDefault();
       })
 
       //지도로 보기
-      $('.mapview').bind("click",function(e){
+      $('.btn-mapview').bind("click",function(e){
         $('.filter-box').addClass('none');
         $('.map-box').removeClass('none');
         e.preventDefault();
-      })
+      });
+
+      //목록 보기
+      $('.btn-listview').bind("click",function(e){
+        $('.filter-box').addClass('none');
+        $('.map-box').removeClass('none');
+        e.preventDefault();
+      });
 
       /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
       /** menu setting ************************************************/
       function defaultFilter () {
         var html = "";
-        html += "<ul class='LBox'>"
+        html += "<ul>"
         _.each(menuFilter.categories, function(items,key1){
-          html += '<li><a class="depth1menu" data-href="'+ items.fullCode+'"><h2>'+ items.name +'</h2></a></li>';
+          html += '<li><a class="depth1menu-cell" data-href="'+ items.fullCode+'"><span>'+ items.name +'</span></a></li>';
         });
         html += "</ul>"
-        $('.list-box').addClass('none');
-        $('.menu').empty();
-        $('.menu').append(html);
+        $('.depth1menu').append(html);
 
         //event
-        $('.depth1menu').bind("click",function(e){
-          console.log($(this).attr('data-href') );
+        $('.depth1menu a').bind("click",function(e){
+          $('.depth1menu li').removeClass('active');
+          $(this).parent().addClass('active');
           subFillter ( $(this).attr('data-href') );
           e.preventDefault();
         });
@@ -192,29 +216,27 @@
 
       function subFillter ( code ) {
         var html = "";
-        html += "<ul class='LBox'>"
+        html += "<ul>"
         _.each(menuFilter.categories, function(items,key1){
           if ( items.fullCode == code ) {
             _.each(items.children, function(item,key2){
-              html += '<li><a class="depth2menu" data-href="'+ item.fullCode+'"><h2>'+ item.name +'</h2></a></li>';
+              html += '<li><a class="depth2menu-cell" data-href="'+ item.fullCode+'"><span>'+ item.name +'</span></a></li>';
             });
-            html += '<li><a class="backmenu" data-href="back"><h2><i class=""></i>백</h2></a></li>';
             return false;
           };
 
         });
         html += "</ul>"
 
-        $('.menu').empty();//메뉴삭제
-        $('.menu').append(html);//depth2 메뉴추가
+        $('.depth2menu').empty();//메뉴삭제
+        $('.depth2menu').append(html);//depth2 메뉴추가
 
         //event
-        $('.depth2menu').bind("click",function(e){//deal목록 생성
+        $('.depth2menu a').bind("click",function(e){//deal목록 생성
           clusterer.clear();
           
           var code = $(this).attr('data-href');
-          $(this).parent().parent().find('li').removeClass('active');
-          $(this).parent().addClass('active');
+
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
             makeDealList( deals );
             loadMap( deals );
@@ -222,11 +244,6 @@
           e.preventDefault();
         });
 
-        $('.backmenu').bind("click",function(e){//매뉴 depth1 로 돌아가기
-          defaultFilter ();
-          $('.list-box').empty();
-          e.preventDefault();
-        });
       }
 
       /** make list *********************************************/
