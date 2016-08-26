@@ -75,7 +75,7 @@
           background-color:#F7F7F7;
         }
       /*map */
-      .map_wrap {position:relative;overflow:hidden;width:100%;}
+      .map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
       .radius_border{border:1px solid #919191;border-radius:5px;}
       .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
       .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
@@ -139,8 +139,8 @@
 
     <script type="text/javascript">
 
-      /*menu */
-
+      /**@@@ menu @@@@@@@@@@@@@@@@@@@*/
+      /** start ************************************************/
       function defaultFilter () {
         var html = "";
         html += "<ul class='LBox'>"
@@ -172,31 +172,34 @@
         });
         html += "</ul>"
 
-        $('.menu').empty();
-        $('.menu').append(html);
-        $('.depth2menu').bind("click",function(e){
+        $('.menu').empty();//메뉴삭제
+        $('.menu').append(html);//depth2 메뉴추가
+
+        $('.depth2menu').bind("click",function(e){//맵불러오기
           var code = $(this).attr('data-href');
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
             loadMap( deals );
           })
           e.preventDefault();
         });
-        $('.backmenu').bind("click",function(e){
+
+        $('.backmenu').bind("click",function(e){//매뉴 depth1 로 돌아가기
           defaultFilter ();
           e.preventDefault();
         });
-        //  loadMap();
       }
+
+      /** start ************************************************/
       defaultFilter ();
 
 
-     // $('[name="dealStatus"]').change(loadMap);
-
+      /**@@@ map @@@@@@@@@@@@@@@@@@@*/
       var map = new daum.maps.Map(document.getElementById("map"), {
           center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
-          level: 12
+          level: 11
       });
 
+       //map 타입
       function setMapType(maptype) {
           var roadmapControl = document.getElementById('btnRoadmap');
           var skyviewControl = document.getElementById('btnSkyview');
@@ -210,31 +213,30 @@
               roadmapControl.className = 'map-btn';
           }
       }
-
+      //map 줌
       function zoomIn() {
           map.setLevel(map.getLevel() - 1);
       }
-
       function zoomOut() {
           map.setLevel(map.getLevel() + 1);
       }
 
+      //메뉴 마킹
       var markers = [];
       var infoWindows = [];
       var selectedInfoWindow;
 
       function loadMap( deals ){
-
-        map.setLevel(8);//레벨변경
+        map.setLevel(11);//레벨 기본셋팅
         map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
+        map.setDraggable(true);
         _.each(deals.list, function(deal){
             markingDeal(deal);
         });
 
-
       }
 
-      function markingDeal(deal) {
+      function markingDeal(deal) {//메뉴 마커 붙이기
         var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
         var marker = new daum.maps.Marker({
           'position': dealPosition,
