@@ -136,7 +136,7 @@
       </section>
 
       <!-- deal list -->
-      <section class="filter-box none">
+      <section class="deal-box">
         <div class="list-box">
 
         </div>
@@ -179,6 +179,7 @@
             $('.filter-box').delay(300).slideToggle();
           };
           if ( $('.map-box').css('display') != "none" ) {
+            $('.list-box').empty();
             $('.map-box').delay(300).slideToggle();
           };
           $('.filter-box').addClass('none');
@@ -248,7 +249,7 @@
 
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
               loadDeals = deals;
-              markingDeal(loadDeals);
+            makeDealList( loadDeals );
               loadMap( loadDeals );
           })
           e.preventDefault();
@@ -278,8 +279,6 @@
             }
         });
         html.push('</ul>');
-
-        $('.list-box').removeClass('none');
         $('.list-box').empty();
         $('.list-box').append(html.join(''));
       }
