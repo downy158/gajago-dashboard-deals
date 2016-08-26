@@ -7,10 +7,8 @@
 
     <title>Gajago-dashboard-deals by leisureq</title>
 
-    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
     <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
 
@@ -145,7 +143,7 @@
       </section>
 
       <!-- map -->
-      <section class="map-box none">
+      <section class="map-box">
         <div class="map_wrap">
           <div id="map" style="height:400px;"></div>
           <div class="custom_typecontrol radius_border">
@@ -158,8 +156,8 @@
           </div>
         </div>
       </section>
-        <button id="btn-show-list"></button>
-        <button id="btn-show-map"></button>
+        <button id="btn-show-list" class="viewbtn none"></button>
+        <button id="btn-show-map" class="viewbtn none"></button>
     </div>
     <footer class="site-footer">
 
@@ -172,12 +170,19 @@
 
     <script type="text/javascript">
       /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
-
+      var loadDeals = {};
       $('.menu-tab a').bind("click",function(e){
         $('.menu-tab li').removeClass('active');
         $(this).parent().addClass('active');
         if ($(this).attr('data-href') == "area") {//지역
-
+          if ( $('.filter-box').css('display') == "none" ) {
+            $('.filter-box').delay(300).slideToggle();
+          };
+          if ( $('.map-box').css('display') != "none" ) {
+            $('.map-box').delay(300).slideToggle();
+          };
+          $('.filter-box').addClass('none');
+          $('.viewbtn').hide('fast');
         } else {//내주변
 
         }
@@ -242,8 +247,8 @@
           var code = $(this).attr('data-href');
 
           $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
-            makeDealList( deals );
-            loadMap( deals );
+              loadDeals = deals;
+              loadMap( loadDeals );
           })
           e.preventDefault();
         });
@@ -322,7 +327,7 @@
         averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
         minLevel: 12 // 클러스터 할 최소 지도 레벨
       });
-
+      $('.map-box').addClass('none');
        //map 타입
       function setMapType(maptype) {
           var roadmapControl = document.getElementById('btnRoadmap');
@@ -351,7 +356,11 @@
       var selectedInfoWindow;
 
       function loadMap( deals ){
-        $('.mapview').removeClass('none')
+          if ( $('.filter-box').css('display') != "none" ) {
+              $('.filter-box').delay(300).slideToggle();
+          }
+          $('.map-box').delay(300).slideToggle();
+          $('#btn-show-list').delay(2000).show();
 
         map.setLevel(11);//레벨 기본셋팅
         map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
