@@ -211,7 +211,7 @@
         //event
         $('.depth2menu').bind("click",function(e){//deal목록 생성
           clusterer.clear();
-          
+
           var code = $(this).attr('data-href');
           $(this).parent().parent().find('li').removeClass('active');
           $(this).parent().addClass('active');
@@ -231,14 +231,31 @@
 
       /** make list *********************************************/
       function makeDealList ( deals ) {
-        var html = "<ul>";
+        var html = ['<ul>'];
         _.each(deals.list, function(item,key2){
-          html += '<li><a href="https://www.thegajago.com/deals/'+item.id+'" target="_new">' + item.dealNm +'</a><li>';
+            try {
+                var listImageJson = JSON.parse(item.listImageJson);
+                html.push('<li>');
+                html.push('<img class="thumb" src="' + listImageJson.list[0].image.src + '" />');
+                html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
+                if (item.distanceKm) {
+                    html.push('<span class="distanceKm">' + item.distanceKm + 'Km</span><br>');
+                }
+                if (item.standardPrice) {
+                    html.push('<span class="price">' + item.standardPrice + '원</span><br>');
+                }
+                if (item.reviewPoint !== '0.0') {
+                    html.push('<span class="star">' + item.reviewPoint + '</span><br>');
+                }
+            } catch(ex) {
+                console.error(ex);
+            }
         });
-        html += "</ul>";
-        $('.list-box').removeClass('none')
+        html.push('</ul>');
+
+        $('.list-box').removeClass('none');
         $('.list-box').empty();
-        $('.list-box').append(html);
+        $('.list-box').append(html.join(''));
       }
 
       /** start ************************************************/
