@@ -45,3 +45,22 @@
     font-size: 14px;
     color: #FF5565;
 }
+
+#btn-show-list {
+    background: url(../images/btn-circle-list.png) no-repeat;
+}
+#btn-show-map {
+    background: url(../images/btn-circle-map.png) no-repeat;
+}
+
+#btn-show-list,
+#btn-show-map {
+    width: 52px;
+    height: 52px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border: none;
+    background-position: center center;
+    background-size: cover;
+}
