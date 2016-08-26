@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gajago-dashboard-deals by leisureq</title>
+
+    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
+    <!-- custom -->
+    <style type="text/css">
+      * { -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box; }
+      .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+      ul {list-style: none;}
+      ul.LBox		{ padding:0; border:0;}
+      .LBox:after	{ content:" "; display:block; clear:both;}
+      .LBox > li	{ float:left; padding:0; border:0;}
+      .LBox > li.li_R	{ float:right; }
+
+
+
+      /*tab*/
+      .menu-tab { width:98%; margin: 0 auto;margin-bottom: -1px }
+      .menu-tab li {
+        display: block;
+        width:50%;
+        border:1px solid lightblue;
+        background-color:#F7F7F7;
+      }
+      .menu-tab li.active { border-bottom-color : #FFF ; background:#FFF ;}
+      .menu-tab a {
+        display: block;
+        width: 100%;
+        padding: 1em 0;
+        text-align: center;
+      }
+      /*menu ui*/
+      .menu { width:100%; margin: 0 auto; padding-left:5px;   }
+      .menu li {
+        width:33.3333%;
+        border:1px solid lightblue;
+        margin-left:-1px ; margin-top: -1px;
+        text-align: center;
+      }
+      .menu a {
+        position: relative;
+        display: block;
+        height:4em ;
+        padding: 0.1em 0;
+      }
+      .menu a h2 {
+        position: absolute;
+        top:50%;
+        left: 0;
+        right: 0;
+        transform: translate(0%,-50%);
+        padding: 0;
+        margin: 0;
+        font-size:1em
+      }
+      a.depth2menu,a.backmenu { font-size:0.8em }
+
+      /*layout*/
+        .herder {
+          border-bottom:1px solid lightblue;
+          text-align: center;
+          background-color:#F7F7F7;
+        }
+      /*map */
+      .map_wrap {position:relative;overflow:hidden;width:100%;}
+      .radius_border{border:1px solid #919191;border-radius:5px;}
+      .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
+      .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
+      .custom_typecontrol .map-btn {background:#fff;background:linear-gradient(#fff,  #e6e6e6);}
+      .custom_typecontrol .map-btn:hover {background:#f5f5f5;background:linear-gradient(#f5f5f5,#e3e3e3);}
+      .custom_typecontrol .map-btn:active {background:#e6e6e6;background:linear-gradient(#e6e6e6, #fff);}
+      .custom_typecontrol .selected-btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+      .custom_typecontrol .selected-btn:hover {color:#fff;}
+      .custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#f5f5f5;}
+      .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
+      .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;box-sizing:content-box;}
+      .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
+
+    </style>
+  </head>
+  <body>
+  <header class="herder">
+    <h1 class="project-name">Gajago 딜 현황판</h1>
+    <h3><a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a></h3>
+    <nav>
+      <ul class="LBox menu-tab">
+        <li class="active"><a data-href="area">지역필터</a></li>
+        <li><a data-href="myarea">내주변</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="">
+    <section class="filter-box">
+      <div class="menu">
+
+      </div>
+      <div class="list-box">
+
+      </div>
+    </section>
+    <section class="map-box">
+
+
+      <div class="map_wrap">
+        <div id="map" style="height:400px;"></div>
+        <div class="custom_typecontrol radius_border">
+          <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
+          <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
+        </div>
+        <div class="custom_zoomcontrol radius_border">
+          <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
+          <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
+        </div>
+      </div>
+
+    </section>
+  </div>
+  <footer class="site-footer">
+    <span class="site-footer-owner"><a href="https://github.com/leisureq/gajago-dashboard-deals">Gajago-dashboard-deals</a> is maintained by <a href="https://github.com/leisureq">leisureq</a>.</span>
+    <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+  </footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
+    <script type="text/javascript" src="./menu_filter.js"></script>
+    <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4"></script>
+
+    <script type="text/javascript">
+
+      /*menu */
+
+      function defaultFilter () {
+        var html = "";
+        html += "<ul class='LBox'>"
+        _.each(menuFilter.categories, function(items,key1){
+          html += '<li><a class="depth1menu" data-href="'+ items.fullCode+'"><h2>'+ items.name +'</h2></a></li>';
+        });
+        html += "</ul>"
+        $('.menu').empty();
+        $('.menu').append(html);
+        $('.depth1menu').bind("click",function(e){
+          console.log($(this).attr('data-href') );
+          subFillter ( $(this).attr('data-href') );
+          e.preventDefault();
+        });
+      }
+
+      function subFillter ( code ) {
+        var html = "";
+        html += "<ul class='LBox'>"
+        _.each(menuFilter.categories, function(items,key1){
+          if ( items.fullCode == code ) {
+            _.each(items.children, function(item,key2){
+              html += '<li><a class="depth2menu" data-href="'+ item.fullCode+'"><h2>'+ item.name +'</h2></a></li>';
+            });
+            html += '<li><a class="backmenu" data-href="back"><h2><i class=""></i>백</h2></a></li>';
+            return false;
+          };
+
+        });
+        html += "</ul>"
+
+        $('.menu').empty();
+        $('.menu').append(html);
+        $('.depth2menu').bind("click",function(e){
+          var code = $(this).attr('data-href');
+          $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
+            loadMap( deals );
+          })
+          e.preventDefault();
+        });
+        $('.backmenu').bind("click",function(e){
+          defaultFilter ();
+          e.preventDefault();
+        });
+        //  loadMap();
+      }
+      defaultFilter ();
+
+
+     // $('[name="dealStatus"]').change(loadMap);
+
+      var map = new daum.maps.Map(document.getElementById("map"), {
+          center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
+          level: 12
+      });
+
+      function setMapType(maptype) {
+          var roadmapControl = document.getElementById('btnRoadmap');
+          var skyviewControl = document.getElementById('btnSkyview');
+          if (maptype === 'roadmap') {
+              map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
+              roadmapControl.className = 'selected-btn';
+              skyviewControl.className = 'map-btn';
+          } else {
+              map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
+              skyviewControl.className = 'selected-btn';
+              roadmapControl.className = 'map-btn';
+          }
+      }
+
+      function zoomIn() {
+          map.setLevel(map.getLevel() - 1);
+      }
+
+      function zoomOut() {
+          map.setLevel(map.getLevel() + 1);
+      }
+
+      var markers = [];
+      var infoWindows = [];
+      var selectedInfoWindow;
+
+      function loadMap( deals ){
+
+        map.setLevel(8);//레벨변경
+        map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
+        _.each(deals.list, function(deal){
+            markingDeal(deal);
+        });
+
+
+      }
+
+      function markingDeal(deal) {
+        var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
+        var marker = new daum.maps.Marker({
+          'position': dealPosition,
+          'title'   : deal.dealNm
+        });
+        marker.setMap(map);
+        markers.push(marker);
+
+        var infoWindow = new daum.maps.InfoWindow({
+          'position': dealPosition,
+          'content' : ('<div class="ellipsis">' +
+            '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
+            deal.id + ' ' +deal.dealNm + '</a></div>')
+        });
+        infoWindows.push(infoWindow);
+
+        daum.maps.event.addListener(marker, 'click', function() {
+          if (!_.isEmpty(selectedInfoWindow)) {
+            selectedInfoWindow.close();
+          }
+
+          infoWindow.open(map, marker);
+          selectedInfoWindow = infoWindow;
+        });
+      }
+    </script>
+  </body>
+</html>
