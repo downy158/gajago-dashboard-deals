@@ -8,10 +8,11 @@
     <title>Gajago-dashboard-deals by leisureq</title>
 
     <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
     <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
 
     <!-- custom -->
     <style type="text/css">
@@ -236,17 +237,16 @@
             try {
                 var listImageJson = JSON.parse(item.listImageJson);
                 html.push('<li>');
-                html.push('<img class="thumb" src="' + listImageJson.list[0].image.src + '" />');
+                html.push('<div class="thumb" style="background-image: url(' + listImageJson.list[0].image.src + ');"></div>');
                 html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
+                html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
                 if (item.distanceKm) {
-                    html.push('<span class="distanceKm">' + item.distanceKm + 'Km</span><br>');
+                    html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
                 }
                 if (item.standardPrice) {
-                    html.push('<span class="price">' + item.standardPrice + '원</span><br>');
+                    html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
                 }
-                if (item.reviewPoint !== '0.0') {
-                    html.push('<span class="star">' + item.reviewPoint + '</span><br>');
-                }
+                html.push('</li>');
             } catch(ex) {
                 console.error(ex);
             }

@@ -1,0 +1,42 @@
+.list-box li .thumb {
+    width: 120px;
+    height: 90px;
+    border-radius: 0px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-color: #eee;
+    overflow: hidden;
+    float: left;
+    margin-right: 12px;
+}
+
+.list-box li {
+    clear: both;
+    overflow: auto;
+}
+
+.list-box li .thumb,
+.list-box li .deal-name,
+.list-box li .deal-desc,
+.list-box li .deal-distance,
+.list-box li .deal-price {
+    display: inline-block;
+}
+
+.list-box li .deal-name {
+    margin-top: 8px;
+}
+
+.list-box li .deal-desc {
+    font-size: 14px;
+}
+
+.list-box li .deal-distance {
+    font-size: 14px;
+}
+
+.list-box li .deal-price {
+    font-size: 14px;
+    color: #FF5565;
+}
