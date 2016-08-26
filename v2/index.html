@@ -210,6 +210,8 @@
 
         //event
         $('.depth2menu').bind("click",function(e){//deal목록 생성
+          clusterer.clear();
+          
           var code = $(this).attr('data-href');
           $(this).parent().parent().find('li').removeClass('active');
           $(this).parent().addClass('active');
@@ -279,8 +281,9 @@
       });
 
       var clusterer = new daum.maps.MarkerClusterer({
-        map: map,
-        markers: markers
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        minLevel: 12 // 클러스터 할 최소 지도 레벨
       });
 
        //map 타입
@@ -312,6 +315,7 @@
 
       function loadMap( deals ){
         $('.mapview').removeClass('none')
+
         map.setLevel(11);//레벨 기본셋팅
         map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
         map.setDraggable(true);
@@ -320,6 +324,7 @@
             markingDeal(deal);
         });
 
+        clusterer.addMarkers(markers);
       }
 
       function markingDeal(deal) {//메뉴 마커 붙이기
