@@ -374,10 +374,15 @@
       }
 
       function markingDeal(deal) {//메뉴 마커 붙이기
+        var images = {
+            'HOTEL': '../images/marker-hotel.png',
+            'DEAL' : '../images/marker-leisure.png'
+        };
         var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
         var marker = new daum.maps.Marker({
           'position': dealPosition,
-          'title'   : deal.dealNm
+          'title'   : deal.dealNm,
+          'image'   : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
         });
         marker.setMap(map);
         markers.push(marker);
