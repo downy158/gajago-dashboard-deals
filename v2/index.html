@@ -244,40 +244,48 @@
 
         //event
         $('.depth2menu a').bind("click",function(e){//deal목록 생성
-          clusterer.clear();
+            clusterer.clear();
 
-          var code = $(this).attr('data-href');
-
-          $.get('http://192.168.0.11:3036/board/region/'+code, function(deals){
-              loadDeals = deals;
-            makeDealList( loadDeals );
-              loadMap( loadDeals );
-          })
-          e.preventDefault();
+            var code = $(this).attr('data-href');
+            $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
+                loadDeals = deals;
+                makeDealList( loadDeals );
+                //loadMap( loadDeals );
+            });
+            e.preventDefault();
         });
 
       }
 
       /** make list *********************************************/
       function makeDealList ( deals ) {
-        var html = ['<ul>'];
+        var html = [
+            '<div>',
+                '검색결과 ', deals.list.length, '건',
+            '</div>',
+            '<ul>'
+        ];
         _.each(deals.list, function(item,key2){
+            var imageSrc = null;
             try {
-                var listImageJson = JSON.parse(item.listImageJson);
-                html.push('<li>');
-                html.push('<div class="thumb" style="background-image: url(' + listImageJson.list[0].image.src + ');"></div>');
-                html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
-                html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
-                if (item.distanceKm) {
-                    html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
-                }
-                if (item.standardPrice) {
-                    html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
-                }
-                html.push('</li>');
+                imageSrc = item.listImageJson.list[0].image.src
             } catch(ex) {
-                console.error(ex);
+                console.log('Malformed listImageJson.', item);
             }
+
+            if (imageSrc === null) return;
+
+            html.push('<li>');
+            html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
+            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
+            html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
+            if (item.distanceKm) {
+                html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
+            }
+            if (item.standardPrice) {
+                html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
+            }
+            html.push('</li>');
         });
         html.push('</ul>');
         $('.list-box').empty();
