@@ -177,11 +177,11 @@
                     $('.list-box').empty();
                     $('.map-box').show();
                 };
-                $('.filter-box').addClass('none');
+                $('.filter-box').hide();
             } else {
                 //내주변
-                $('.list-box').empty().hide(300);
                 $('.filter-box').hide(300);
+                $('.list-box').empty().hide(300);
                 $('.map-box').show();
                 myAreaDeals();
             }
@@ -276,13 +276,13 @@
                     html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
                     html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
                     if (item.dealPointDesc) {
-                            html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
+                        html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
                     }
                     if (item.distanceKm) {
-                            html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
+                        html.push('<span class="deal-distance">' + item.distanceKm.toFixed(2) + 'Km</span><br>');
                     }
                     if (item.standardPrice) {
-                            html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
+                        html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
                     }
                     html.push('</li>');
             });
