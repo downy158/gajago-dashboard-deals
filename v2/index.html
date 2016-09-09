@@ -9,7 +9,7 @@
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
         <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+        <link rel="stylesheet" type="text/css" href="https://yui.yahooapis.com/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
 
         <!-- custom -->
@@ -135,8 +135,8 @@
                         <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
                     </div>
                     <div class="custom_zoomcontrol radius_border">
-                        <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-                        <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
+                        <span onclick="zoomIn()"><img src="https://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
+                        <span onclick="zoomOut()"><img src="https://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
                     </div>
                 </div>
             </section>
@@ -157,7 +157,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="./menu_filter.js"></script>
-    <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
+    <script type="text/javascript" src="https://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
 
     <script type="text/javascript">
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
@@ -296,25 +296,25 @@
 
         /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
         function myAreaDeals() {
-            if ("geolocation" in navigator) {
+            if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    clusterer.clear();
-
-                    if (!position) return;
-
-                    var params = { lat: position.coords.latitude, lon: position.coords.longitude };
-                    $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
-                        _cachedDealResponse = deals;
-                        makeDealList();
-                    });
+                    loadMyAreaDeals(position);
                 }, function (err) {
                     alert('사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.');
-                }, {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 600000
                 });
             }
+        }
+
+        function loadMyAreaDeals(position) {
+            clusterer.clear();
+
+            if (!position) return;
+
+            var params = { lat: position.coords.latitude, lon: position.coords.longitude };
+            $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
+                _cachedDealResponse = deals;
+                makeDealList();
+            });
         }
 
         //event
