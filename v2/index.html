@@ -175,14 +175,14 @@
                 };
                 if ( $('.map-box').css('display') != "none" ) {
                     $('.list-box').empty();
-                    $('.map-box').delay(300).slideToggle();
+                    $('.map-box').show();
                 };
                 $('.filter-box').addClass('none');
             } else {
                 //내주변
                 $('.list-box').empty().hide(300);
                 $('.filter-box').hide(300);
-                $('.map-box').show(300);
+                $('.map-box').show();
                 myAreaDeals();
             }
             e.preventDefault();
@@ -331,7 +331,7 @@
             averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
             minLevel: 12 // 클러스터 할 최소 지도 레벨
         });
-        $('.map-box').addClass('none');
+        $('.map-box').hide();
          //map 타입
         function setMapType(maptype) {
                 var roadmapControl = document.getElementById('btnRoadmap');
@@ -361,7 +361,7 @@
 
         function loadMap(){
             $('.filter-box, .list-box, #btn-show-map').hide(300);
-            $('.map-box, #btn-show-list').show(300);
+            $('.map-box, #btn-show-list').show();
 
             map.setLevel(12);//레벨 기본셋팅
             map.setCenter(new daum.maps.LatLng(_cachedDealResponse.centerLat, _cachedDealResponse.centerLon)); //중심변경
