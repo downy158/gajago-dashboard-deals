@@ -313,7 +313,9 @@
             var params = { lat: position.coords.latitude, lon: position.coords.longitude };
             $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
                 _cachedDealResponse = {
-                    list: deals
+                    list: deals,
+                    centerLat: position.coords.latitude,
+                    centerLon: position.coords.longitude
                 }
                 makeDealList();
             });
