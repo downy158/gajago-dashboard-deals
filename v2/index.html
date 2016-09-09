@@ -1,418 +1,415 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gajago-dashboard-deals by leisureq</title>
+        <title>Gajago-dashboard-deals by leisureq</title>
 
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
+        <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+        <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
 
-    <!-- custom -->
-    <style type="text/css">
-      html,body { height:100%; }
-      * { -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        -webkit-overflow-scrolling: touch;
-      }
-      .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+        <!-- custom -->
+        <style type="text/css">
+            html,body { height:100%; }
+            * { -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                -webkit-overflow-scrolling: touch;
+            }
+            .ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 
-      ul {list-style: none;}
-      ul,li { padding: 0; margin: 0}
-      a:hover, a:active { text-decoration:none }
-      ul.LBox		{ padding:0; border:0;}
-      .LBox:after	{ content:" "; display:block; clear:both;}
-      .LBox > li	{ float:left; padding:0; border:0;}
-      .LBox > li.li_R	{ float:right; }
-      .none { display:none }
+            ul {list-style: none;}
+            ul,li { padding: 0; margin: 0}
+            a:hover, a:active { text-decoration:none }
+            ul.LBox		{ padding:0; border:0;}
+            .LBox:after	{ content:" "; display:block; clear:both;}
+            .LBox > li	{ float:left; padding:0; border:0;}
+            .LBox > li.li_R	{ float:right; }
+            .none { display:none }
 
-      .viewbtn {
-        position: fixed;
-        right: 10px;
-        bottom: 10px;
-        width: 60px;
-        height: 60px;
-        background: rgba(0,0,0,0.5);
-        border-radius:50%;
-      }
+            /*tab*/
+            .menu-tab { margin-bottom: -1px }
+            .menu-tab li {
+                display: block;
+                width:50%;
+                padding: 0.8em 0;
+                box-sizing: content-box;
+                background-color:#FFF;
+            }
+            .menu-tab li.active { border-bottom:4px solid #1F93FF; color: #1F93FF;}
+            .menu-tab a {
+                display: block;
+                width: 100%;
+                text-align: center; border-bottom:#1F93FF;
+            }
 
+            /*layout*/
+            .herder {
+                padding: 0; margin: 0;
+                text-align: center;
+                background-color:#FFF;
+            }
+            .herder-title { margin: 0; padding:0.2em;    font-size:1.5em; color:#FFF; text-align: left; background:#1F93FF }
 
-      /*tab*/
-      .menu-tab { margin-bottom: -1px }
-      .menu-tab li {
-        display: block;
-        width:50%;
-        padding: 0.8em 0;
-        box-sizing: content-box;
-        background-color:#FFF;
-      }
-      .menu-tab li.active { border-bottom:4px solid #1F93FF; color: #1F93FF;}
-      .menu-tab a {
-        display: block;
-        width: 100%;
-        text-align: center; border-bottom:#1F93FF;
-      }
-
-      /*layout*/
-      .herder {
-        padding: 0; margin: 0;
-        text-align: center;
-        background-color:#FFF;
-      }
-      .herder-title { margin: 0; padding:0.2em;  font-size:1.5em; color:#FFF; text-align: left; background:#1F93FF }
-
-      /*filter-box ui*/
-      .menu { display:table;  width:100%; height:100%;  margin: 0 auto; text-align: left; border-bottom:1px solid #D8D8D8; }
-      .menu > li { display:table-cell; padding: 0; margin: 0; text-align: center; }
-      .menu a { display: block; padding: 1em 0; }
-      .filter-box-msg {  margin-top:-2px; padding:0.8em 0;  color:#FFF;   text-align: center; background:#9F9F9F }
-      .depth1menu {
-        width:40%;
-        padding: 0.5em 0.1em;
-        border-right:1px solid #D8D8D8;
-      }
-      .depth1menu a { color:#469FFF }
-      .depth1menu .active a { color:#FFF;  background-color:#1F93FF }
-      .depth2menu {
-        width:60%;
-        background: #F2F2F2;
-      }
-      .depth2menu li { padding: 0 1.5em; text-align: left }
-      .depth2menu a {
-        color: #8A8A8A;
-        border-bottom:1px solid #D0D0D0 ;
-      }
-      .depth2menu li:hover,.depth2menu li:active {
-        background: #DFDFDF;
-      }
-      .depth2menu li:hover a,.depth2menu li:active a {  color: #000}
+            /*filter-box ui*/
+            .menu { display:table;    width:100%; height:100%;    margin: 0 auto; text-align: left; border-bottom:1px solid #D8D8D8; }
+            .menu > li { display:table-cell; padding: 0; margin: 0; text-align: center; }
+            .menu a { display: block; padding: 1em 0; }
+            .filter-box-msg {    margin-top:-2px; padding:0.8em 0;    color:#FFF;     text-align: center; background:#9F9F9F }
+            .depth1menu {
+                width:40%;
+                padding: 0.5em 0.1em;
+                border-right:1px solid #D8D8D8;
+            }
+            .depth1menu a { color:#469FFF }
+            .depth1menu .active a { color:#FFF;    background-color:#1F93FF }
+            .depth2menu {
+                width:60%;
+                background: #F2F2F2;
+            }
+            .depth2menu li { padding: 0 1.5em; text-align: left }
+            .depth2menu a {
+                color: #8A8A8A;
+                border-bottom:1px solid #D0D0D0 ;
+            }
+            .depth2menu li:hover,.depth2menu li:active {
+                background: #DFDFDF;
+            }
+            .depth2menu li:hover a,.depth2menu li:active a {    color: #000}
 
 
-        /*map */
-      .map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
-      .radius_border{border:1px solid #919191;border-radius:5px;}
-      .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
-      .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
-      .custom_typecontrol .map-btn {background:#fff;background:linear-gradient(#fff,  #e6e6e6);}
-      .custom_typecontrol .map-btn:hover {background:#f5f5f5;background:linear-gradient(#f5f5f5,#e3e3e3);}
-      .custom_typecontrol .map-btn:active {background:#e6e6e6;background:linear-gradient(#e6e6e6, #fff);}
-      .custom_typecontrol .selected-btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
-      .custom_typecontrol .selected-btn:hover {color:#fff;}
-      .custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#f5f5f5;}
-      .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
-      .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;box-sizing:content-box;}
-      .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
+                /*map */
+            .map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
+            .radius_border{border:1px solid #919191;border-radius:5px;}
+            .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
+            .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
+            .custom_typecontrol .map-btn {background:#fff;background:linear-gradient(#fff,    #e6e6e6);}
+            .custom_typecontrol .map-btn:hover {background:#f5f5f5;background:linear-gradient(#f5f5f5,#e3e3e3);}
+            .custom_typecontrol .map-btn:active {background:#e6e6e6;background:linear-gradient(#e6e6e6, #fff);}
+            .custom_typecontrol .selected-btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+            .custom_typecontrol .selected-btn:hover {color:#fff;}
+            .custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#f5f5f5;}
+            .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
+            .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;box-sizing:content-box;}
+            .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
 
-    </style>
-  </head>
-  <body>
-  <div class="Wrap">
-    <header class="herder">
-      <h1 class="herder-title">Gajago 딜 현황판</h1>
-      <nav>
-        <ul class="LBox menu-tab">
-          <li class="active"><a data-href="area">지역</a></li>
-          <li><a data-href="myarea">내주변</a></li>
-        </ul>
-      </nav>
-    </header>
-    <div class="content">
-      <!-- menu -->
-      <section class="filter-box">
-        <div class="filter-box-msg">원하시는 지역을 선택하세요</div>
-        <ul class="menu">
-          <li class="depth1menu">
+        </style>
+    </head>
+    <body>
+    <div class="Wrap">
+        <header class="herder">
+            <h1 class="herder-title">Gajago 딜 현황판</h1>
+            <nav>
+                <ul class="LBox menu-tab">
+                    <li class="active"><a data-href="area">지역</a></li>
+                    <li><a data-href="myarea">내주변</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="content">
+            <!-- menu -->
+            <section class="filter-box">
+                <div class="filter-box-msg">원하시는 지역을 선택하세요</div>
+                <ul class="menu">
+                    <li class="depth1menu">
 
-          </li>
-          <li class="depth2menu">
+                    </li>
+                    <li class="depth2menu">
 
-          </li>
-        </ul>
-      </section>
+                    </li>
+                </ul>
+            </section>
 
 
 
-      <!-- map -->
-      <section class="map-box">
-        <div class="map_wrap">
-          <div id="map" style="height:400px;"></div>
-          <div class="custom_typecontrol radius_border">
-            <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
-            <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
-          </div>
-          <div class="custom_zoomcontrol radius_border">
-            <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-            <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
-          </div>
+            <!-- map -->
+            <section class="map-box">
+                <div class="map_wrap">
+                    <div id="map" style="height:400px;"></div>
+                    <div class="custom_typecontrol radius_border">
+                        <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
+                        <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
+                    </div>
+                    <div class="custom_zoomcontrol radius_border">
+                        <span onclick="zoomIn()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
+                        <span onclick="zoomOut()"><img src="http://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
+                    </div>
+                </div>
+            </section>
+            <!-- deal list -->
+            <section class="deal-box">
+                <div class="list-box">
+
+                </div>
+            </section>
         </div>
-      </section>
-      <!-- deal list -->
-      <section class="deal-box">
-        <div class="list-box">
+        <footer class="site-footer">
 
-        </div>
-      </section>
-        <button id="btn-show-list" class="viewbtn none"></button>
-        <button id="btn-show-map" class="viewbtn none"></button>
+        </footer>
     </div>
-    <footer class="site-footer">
+    <button id="btn-show-list" class="none"></button>
+    <button id="btn-show-map" class="none"></button>
 
-    </footer>
-  </div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="./menu_filter.js"></script>
     <script type="text/javascript" src="http://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
 
     <script type="text/javascript">
-      /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
-      var loadDeals = {};
-      $('.menu-tab a').bind("click",function(e){
-        $('.menu-tab li').removeClass('active');
-        $(this).parent().addClass('active');
-        if ($(this).attr('data-href') == "area") {//지역
-          if ( $('.filter-box').css('display') == "none" ) {
-            $('.filter-box').delay(300).slideToggle();
-          };
-          if ( $('.map-box').css('display') != "none" ) {
-            $('.list-box').empty();
-            $('.map-box').delay(300).slideToggle();
-          };
-          $('.filter-box').addClass('none');
-          $('.viewbtn').hide('fast');
-        } else {//내주변
+        /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
+        var _cachedDealResponse = {};
+        $('.menu-tab a').bind("click",function(e){
+            _cachedDealResponse = {}; // cache clear
 
-        }
-        e.preventDefault();
-      })
+            $('.menu-tab li').removeClass('active');
+            $(this).parent().addClass('active');
 
-      //지도로 보기
-      $('.btn-mapview').bind("click",function(e){
-        $('.filter-box').addClass('none');
-        $('.map-box').removeClass('none');
-        e.preventDefault();
-      });
-
-      //목록 보기
-      $('.btn-listview').bind("click",function(e){
-        $('.filter-box').addClass('none');
-        $('.map-box').removeClass('none');
-        e.preventDefault();
-      });
-
-      /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
-      /** menu setting ************************************************/
-      function defaultFilter () {
-        var html = "";
-        html += "<ul>"
-        _.each(menuFilter.categories, function(items,key1){
-          html += '<li><a class="depth1menu-cell" data-href="'+ items.fullCode+'"><span>'+ items.name +'</span></a></li>';
-        });
-        html += "</ul>"
-        $('.depth1menu').append(html);
-
-        //event
-        $('.depth1menu a').bind("click",function(e){
-          $('.depth1menu li').removeClass('active');
-          $(this).parent().addClass('active');
-          subFillter ( $(this).attr('data-href') );
-          e.preventDefault();
-        });
-      }
-
-      function subFillter ( code ) {
-        var html = "";
-        html += "<ul>"
-        _.each(menuFilter.categories, function(items,key1){
-          if ( items.fullCode == code ) {
-            _.each(items.children, function(item,key2){
-              html += '<li><a class="depth2menu-cell" data-href="'+ item.fullCode+'"><span>'+ item.name +'</span></a></li>';
-            });
-            return false;
-          };
-
-        });
-        html += "</ul>"
-
-        $('.depth2menu').empty();//메뉴삭제
-        $('.depth2menu').append(html);//depth2 메뉴추가
-
-        //event
-        $('.depth2menu a').bind("click",function(e){//deal목록 생성
-            clusterer.clear();
-
-            var code = $(this).attr('data-href');
-            $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
-                loadDeals = deals;
-                makeDealList( loadDeals );
-                //loadMap( loadDeals );
-            });
+            if ($(this).attr('data-href') == "area") {
+                //지역
+                if ( $('.filter-box').css('display') == "none" ) {
+                    $('.filter-box').delay(300).slideToggle();
+                };
+                if ( $('.map-box').css('display') != "none" ) {
+                    $('.list-box').empty();
+                    $('.map-box').delay(300).slideToggle();
+                };
+                $('.filter-box').addClass('none');
+            } else {
+                //내주변
+                $('.list-box').empty().hide(300);
+                $('.filter-box').hide(300);
+                $('.map-box').show(300);
+                myAreaDeals();
+            }
             e.preventDefault();
         });
 
-      }
-
-      /** make list *********************************************/
-      function makeDealList ( deals ) {
-        var html = [
-            '<div>',
-                '검색결과 ', deals.list.length, '건',
-            '</div>',
-            '<ul>'
-        ];
-        _.each(deals.list, function(item,key2){
-            var imageSrc = null;
-            try {
-                imageSrc = item.listImageJson.list[0].image.src
-            } catch(ex) {
-                console.log('Malformed listImageJson.', item);
-            }
-
-            if (imageSrc === null) return;
-
-            html.push('<li>');
-            html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
-            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
-            html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
-            if (item.distanceKm) {
-                html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
-            }
-            if (item.standardPrice) {
-                html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
-            }
-            html.push('</li>');
+        //지도로 보기
+        $('#btn-show-list').click(function(e){
+            e.preventDefault();
+            makeDealList();
         });
-        html.push('</ul>');
-        $('.list-box').empty();
-        $('.list-box').append(html.join(''));
-      }
 
-      /** start ************************************************/
-      defaultFilter ();
+        //목록 보기
+        $('#btn-show-map').click(function(e){
+            e.preventDefault();
+            loadMap();
+        });
 
-      /**@@@ 내주변  @@@@@@@@@@@@@@@@@@@*/
-      function myareaDeals() {
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-            callBack({
-              position: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-              }
+        /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
+        /** menu setting ************************************************/
+        function defaultFilter () {
+            var html = "";
+            html += "<ul>"
+            _.each(menuFilter.categories, function(items,key1){
+                html += '<li><a class="depth1menu-cell" data-href="'+ items.fullCode+'"><span>'+ items.name +'</span></a></li>';
             });
-            console.log( position )
-          }, function (err) {
-            toast.push({
-              theme:"basic",
-              msg:'사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.'
+            html += "</ul>"
+            $('.depth1menu').append(html);
+
+            //event
+            $('.depth1menu a').bind("click",function(e){
+                $('.depth1menu li').removeClass('active');
+                $(this).parent().addClass('active');
+                subFillter ( $(this).attr('data-href') );
+                e.preventDefault();
             });
-            callBack({
-              error: '[code:' + err.code + '] ' + err.message
-            });
-          }, {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 600000
-          });
         }
-      }
 
-      //event
+        function subFillter ( code ) {
+            var html = "";
+            html += "<ul>"
+            _.each(menuFilter.categories, function(items,key1){
+                if ( items.fullCode == code ) {
+                    _.each(items.children, function(item,key2){
+                        html += '<li><a class="depth2menu-cell" data-href="'+ item.fullCode+'"><span>'+ item.name +'</span></a></li>';
+                    });
+                    return false;
+                };
+
+            });
+            html += "</ul>"
+
+            $('.depth2menu').empty();//메뉴삭제
+            $('.depth2menu').append(html);//depth2 메뉴추가
+
+            //event
+            $('.depth2menu a').bind("click",function(e){//deal목록 생성
+                var code = $(this).attr('data-href');
+                $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
+                    _cachedDealResponse = deals;
+                    makeDealList(_cachedDealResponse);
+                });
+                e.preventDefault();
+            });
+
+        }
+
+        /** make list *********************************************/
+        function makeDealList () {
+            $('.list-box, #btn-show-map').show(300);
+            $('.filter-box, .map-box, #btn-show-list').hide(300);
+
+            clusterer.clear();
+
+            var html = [
+                    '<div id="list-count">',
+                            '검색결과 <span class="text-count">', _cachedDealResponse.list.length, '</span>건',
+                    '</div>',
+                    '<ul>'
+            ];
+            _.each(_cachedDealResponse.list, function(item,key2){
+                    var imageSrc = null;
+                    try {
+                            imageSrc = item.listImageJson.list[0].image.src
+                    } catch(ex) {
+                            console.log('Malformed listImageJson.', item);
+                    }
+
+                    if (imageSrc === null) return;
+
+                    html.push('<li>');
+                    html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
+                    html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
+                    if (item.dealPointDesc) {
+                            html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
+                    }
+                    if (item.distanceKm) {
+                            html.push('<span class="deal-distance">' + item.distanceKm + 'Km</span><br>');
+                    }
+                    if (item.standardPrice) {
+                            html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
+                    }
+                    html.push('</li>');
+            });
+            html.push('</ul>');
+            $('.list-box').empty();
+            $('.list-box').append(html.join(''));
+        }
+
+        /** start ************************************************/
+        defaultFilter ();
+
+        /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
+        function myAreaDeals() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    clusterer.clear();
+
+                    if (!position) return;
+
+                    var params = { lat: position.coords.latitude, lon: position.coords.longitude };
+                    $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
+                        _cachedDealResponse = deals;
+                        makeDealList();
+                    });
+                }, function (err) {
+                    alert('사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.');
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 600000
+                });
+            }
+        }
+
+        //event
 
 
-      /**@@@ map @@@@@@@@@@@@@@@@@@@*/
-      var map = new daum.maps.Map(document.getElementById("map"), {
-          center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
-          level: 11
-      });
-
-      var clusterer = new daum.maps.MarkerClusterer({
-        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
-        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-        minLevel: 12 // 클러스터 할 최소 지도 레벨
-      });
-      $('.map-box').addClass('none');
-       //map 타입
-      function setMapType(maptype) {
-          var roadmapControl = document.getElementById('btnRoadmap');
-          var skyviewControl = document.getElementById('btnSkyview');
-          if (maptype === 'roadmap') {
-              map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
-              roadmapControl.className = 'selected-btn';
-              skyviewControl.className = 'map-btn';
-          } else {
-              map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
-              skyviewControl.className = 'selected-btn';
-              roadmapControl.className = 'map-btn';
-          }
-      }
-      //map 줌
-      function zoomIn() {
-          map.setLevel(map.getLevel() - 1);
-      }
-      function zoomOut() {
-          map.setLevel(map.getLevel() + 1);
-      }
-
-      //메뉴 마킹
-      var markers = [];
-      var infoWindows = [];
-      var selectedInfoWindow;
-
-      function loadMap( deals ){
-          if ( $('.filter-box').css('display') != "none" ) {
-              $('.filter-box').delay(300).slideToggle();
-          }
-          $('.map-box').delay(300).slideToggle();
-          $('#btn-show-list').delay(2000).show();
-
-        map.setLevel(11);//레벨 기본셋팅
-        map.setCenter(new daum.maps.LatLng( deals.centerLat, deals.centerLon)); //중심변경
-        map.setDraggable(true);
-        clusterer.clear();
-        _.each(deals.list, function(deal){
-            markingDeal(deal);
+        /**@@@ map @@@@@@@@@@@@@@@@@@@*/
+        var map = new daum.maps.Map(document.getElementById("map"), {
+                center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
+                level: 11
         });
 
-        clusterer.addMarkers(markers);
-      }
-
-      function markingDeal(deal) {//메뉴 마커 붙이기
-        var images = {
-            'HOTEL': '../images/marker-hotel.png',
-            'DEAL' : '../images/marker-leisure.png'
-        };
-        var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
-        var marker = new daum.maps.Marker({
-          'position': dealPosition,
-          'title'   : deal.dealNm,
-          'image'   : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
+        var clusterer = new daum.maps.MarkerClusterer({
+            map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+            averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+            minLevel: 12 // 클러스터 할 최소 지도 레벨
         });
-        marker.setMap(map);
-        markers.push(marker);
+        $('.map-box').addClass('none');
+         //map 타입
+        function setMapType(maptype) {
+                var roadmapControl = document.getElementById('btnRoadmap');
+                var skyviewControl = document.getElementById('btnSkyview');
+                if (maptype === 'roadmap') {
+                        map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
+                        roadmapControl.className = 'selected-btn';
+                        skyviewControl.className = 'map-btn';
+                } else {
+                        map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
+                        skyviewControl.className = 'selected-btn';
+                        roadmapControl.className = 'map-btn';
+                }
+        }
+        //map 줌
+        function zoomIn() {
+                map.setLevel(map.getLevel() - 1);
+        }
+        function zoomOut() {
+                map.setLevel(map.getLevel() + 1);
+        }
 
-        var infoWindow = new daum.maps.InfoWindow({
-          'position': dealPosition,
-          'content' : ('<div class="ellipsis">' +
-            '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
-            deal.id + ' ' +deal.dealNm + '</a></div>')
-        });
-        infoWindows.push(infoWindow);
+        //메뉴 마킹
+        var markers = [];
+        var infoWindows = [];
+        var selectedInfoWindow;
 
-        daum.maps.event.addListener(marker, 'click', function() {
-          if (!_.isEmpty(selectedInfoWindow)) {
-            selectedInfoWindow.close();
-          }
+        function loadMap(){
+            $('.filter-box, .list-box, #btn-show-map').hide(300);
+            $('.map-box, #btn-show-list').show(300);
 
-          infoWindow.open(map, marker);
-          selectedInfoWindow = infoWindow;
-        });
-      }
+            map.setLevel(12);//레벨 기본셋팅
+            map.setCenter(new daum.maps.LatLng(_cachedDealResponse.centerLat, _cachedDealResponse.centerLon)); //중심변경
+            map.setDraggable(true);
+
+            clusterer.clear();
+
+            _.each(_cachedDealResponse.list, function(deal){
+                markingDeal(deal);
+            });
+
+            clusterer.addMarkers(markers);
+
+            $('#btn-show-list').show();
+            $('#btn-show-map').hide();
+        }
+
+        function markingDeal(deal) {//메뉴 마커 붙이기
+            var images = {
+                    'HOTEL': '../images/marker-hotel.png',
+                    'DEAL' : '../images/marker-leisure.png'
+            };
+            var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
+            var marker = new daum.maps.Marker({
+                'position': dealPosition,
+                'title'     : deal.dealNm,
+                'image'     : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
+            });
+            marker.setMap(map);
+            markers.push(marker);
+
+            var infoWindow = new daum.maps.InfoWindow({
+                'position': dealPosition,
+                'content' : ('<div class="ellipsis">' +
+                    '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
+                    deal.id + ' ' +deal.dealNm + '</a></div>')
+            });
+            infoWindows.push(infoWindow);
+
+            daum.maps.event.addListener(marker, 'click', function() {
+                if (!_.isEmpty(selectedInfoWindow)) {
+                    selectedInfoWindow.close();
+                }
+
+                infoWindow.open(map, marker);
+                selectedInfoWindow = infoWindow;
+            });
+        }
     </script>
-  </body>
+    </body>
 </html>
