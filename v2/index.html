@@ -312,7 +312,9 @@
 
             var params = { lat: position.coords.latitude, lon: position.coords.longitude };
             $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
-                _cachedDealResponse = deals;
+                _cachedDealResponse = {
+                    list: deals
+                }
                 makeDealList();
             });
         }
@@ -323,7 +325,7 @@
         /**@@@ map @@@@@@@@@@@@@@@@@@@*/
         var map = new daum.maps.Map(document.getElementById("map"), {
                 center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
-                level: 11
+                level: 12
         });
 
         var clusterer = new daum.maps.MarkerClusterer({
