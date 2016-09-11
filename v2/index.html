@@ -127,22 +127,10 @@
 
 
             <!-- map -->
-            <section class="map-box">
-                <div class="map_wrap">
-                    <div id="map" style="height:400px;"></div>
-                    <div class="custom_typecontrol radius_border">
-                        <span id="btnRoadmap" class="selected-btn" onclick="setMapType('roadmap')">지도</span>
-                        <span id="btnSkyview" class="map-btn" onclick="setMapType('skyview')">스카이뷰</span>
-                    </div>
-                    <div class="custom_zoomcontrol radius_border">
-                        <span onclick="zoomIn()"><img src="https://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-                        <span onclick="zoomOut()"><img src="https://i1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
-                    </div>
-                </div>
-            </section>
+            <section class="map-box" id="map-view"></section>
             <!-- deal list -->
             <section class="deal-box">
-                <div class="list-box">
+                <div class="list-box" id="list-view">
 
                 </div>
             </section>
@@ -156,12 +144,20 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
-    <script type="text/javascript" src="./menu_filter.js"></script>
     <script type="text/javascript" src="https://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
+    <script type="text/javascript" src="./menu_filter.js"></script>
+    <script type="text/javascript" src="./list-view.js"></script>
+    <script type="text/javascript" src="./map-view.js"></script>
 
     <script type="text/javascript">
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
+        var _listView = new ListView($('#list-view'));
+        var _mapView  = new MapView($('#map-view'));
         var _cachedDealResponse = {};
+
+        _listView.display(false);
+        _mapView.display(false);
+
         $('.menu-tab a').bind("click",function(e){
             _cachedDealResponse = {}; // cache clear
 
@@ -174,15 +170,15 @@
                     $('.filter-box').delay(300).slideToggle();
                 };
                 if ( $('.map-box').css('display') != "none" ) {
-                    $('.list-box').empty();
-                    $('.map-box').show();
+                    _listView.display(false);
+                    _mapView.display(true);
                 };
                 $('.filter-box').hide();
             } else {
                 //내주변
                 $('.filter-box').hide(300);
-                $('.list-box').empty().hide(300);
-                $('.map-box').show();
+                _listView.display(false);
+                _mapView.display(true)
                 myAreaDeals();
             }
             e.preventDefault();
@@ -191,13 +187,13 @@
         //지도로 보기
         $('#btn-show-list').click(function(e){
             e.preventDefault();
-            makeDealList();
+            _listView.render(_cachedDealResponse);
         });
 
         //목록 보기
         $('#btn-show-map').click(function(e){
             e.preventDefault();
-            loadMap();
+            _mapView.render(_cachedDealResponse);
         });
 
         /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
@@ -242,56 +238,14 @@
                 var code = $(this).attr('data-href');
                 $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
                     _cachedDealResponse = deals;
-                    makeDealList(_cachedDealResponse);
+                    // makeDealList(_cachedDealResponse);
+                    _listView.render(_cachedDealResponse);
                 });
                 e.preventDefault();
             });
 
         }
 
-        /** make list *********************************************/
-        function makeDealList () {
-            $('.list-box, #btn-show-map').show(300);
-            $('.filter-box, .map-box, #btn-show-list').hide(300);
-
-            clusterer.clear();
-
-            var html = [
-                    '<div id="list-count">',
-                            '검색결과 <span class="text-count">', _cachedDealResponse.list.length, '</span>건',
-                    '</div>',
-                    '<ul>'
-            ];
-            _.each(_cachedDealResponse.list, function(item,key2){
-                    var imageSrc = null;
-                    try {
-                            imageSrc = item.listImageJson.list[0].image.src
-                    } catch(ex) {
-                            console.log('Malformed listImageJson.', item);
-                    }
-
-                    if (imageSrc === null) return;
-
-                    html.push('<li>');
-                    html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
-                    html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
-                    if (item.dealPointDesc) {
-                        html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
-                    }
-                    if (item.distanceKm) {
-                        html.push('<span class="deal-distance">' + item.distanceKm.toFixed(2) + 'Km</span><br>');
-                    }
-                    if (item.standardPrice) {
-                        html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
-                    }
-                    html.push('</li>');
-            });
-            html.push('</ul>');
-            $('.list-box').empty();
-            $('.list-box').append(html.join(''));
-        }
-
-        /** start ************************************************/
         defaultFilter ();
 
         /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
@@ -306,8 +260,6 @@
         }
 
         function loadMyAreaDeals(position) {
-            clusterer.clear();
-
             if (!position) return;
 
             var params = { lat: position.coords.latitude, lon: position.coords.longitude };
@@ -317,103 +269,12 @@
                     centerLat: position.coords.latitude,
                     centerLon: position.coords.longitude
                 }
-                makeDealList();
+                // makeDealList();
+                _listView.render(_cachedDealResponse);
             });
         }
 
         //event
-
-
-        /**@@@ map @@@@@@@@@@@@@@@@@@@*/
-        var map = new daum.maps.Map(document.getElementById("map"), {
-                center: new daum.maps.LatLng(36.37512908430549, 127.60872401345618),
-                level: 12
-        });
-
-        var clusterer = new daum.maps.MarkerClusterer({
-            map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
-            averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-            minLevel: 12 // 클러스터 할 최소 지도 레벨
-        });
-        $('.map-box').hide();
-         //map 타입
-        function setMapType(maptype) {
-                var roadmapControl = document.getElementById('btnRoadmap');
-                var skyviewControl = document.getElementById('btnSkyview');
-                if (maptype === 'roadmap') {
-                        map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
-                        roadmapControl.className = 'selected-btn';
-                        skyviewControl.className = 'map-btn';
-                } else {
-                        map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
-                        skyviewControl.className = 'selected-btn';
-                        roadmapControl.className = 'map-btn';
-                }
-        }
-        //map 줌
-        function zoomIn() {
-                map.setLevel(map.getLevel() - 1);
-        }
-        function zoomOut() {
-                map.setLevel(map.getLevel() + 1);
-        }
-
-        //메뉴 마킹
-        var markers = [];
-        var infoWindows = [];
-        var selectedInfoWindow;
-
-        function loadMap(){
-            $('.filter-box, .list-box, #btn-show-map').hide(300);
-            $('.map-box, #btn-show-list').show();
-
-            map.setLevel(12);//레벨 기본셋팅
-            map.setCenter(new daum.maps.LatLng(_cachedDealResponse.centerLat, _cachedDealResponse.centerLon)); //중심변경
-            map.setDraggable(true);
-
-            clusterer.clear();
-
-            _.each(_cachedDealResponse.list, function(deal){
-                markingDeal(deal);
-            });
-
-            clusterer.addMarkers(markers);
-
-            $('#btn-show-list').show();
-            $('#btn-show-map').hide();
-        }
-
-        function markingDeal(deal) {//메뉴 마커 붙이기
-            var images = {
-                    'HOTEL': '../images/marker-hotel.png',
-                    'DEAL' : '../images/marker-leisure.png'
-            };
-            var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
-            var marker = new daum.maps.Marker({
-                'position': dealPosition,
-                'title'     : deal.dealNm,
-                'image'     : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
-            });
-            marker.setMap(map);
-            markers.push(marker);
-
-            var infoWindow = new daum.maps.InfoWindow({
-                'position': dealPosition,
-                'content' : ('<div class="ellipsis">' +
-                    '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
-                    deal.id + ' ' +deal.dealNm + '</a></div>')
-            });
-            infoWindows.push(infoWindow);
-
-            daum.maps.event.addListener(marker, 'click', function() {
-                if (!_.isEmpty(selectedInfoWindow)) {
-                    selectedInfoWindow.close();
-                }
-
-                infoWindow.open(map, marker);
-                selectedInfoWindow = infoWindow;
-            });
-        }
     </script>
     </body>
 </html>
