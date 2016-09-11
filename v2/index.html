@@ -110,34 +110,14 @@
                 </ul>
             </nav>
         </header>
+
         <div class="content">
-            <!-- menu -->
-            <section class="filter-box">
-                <div class="filter-box-msg">원하시는 지역을 선택하세요</div>
-                <ul class="menu">
-                    <li class="depth1menu">
-
-                    </li>
-                    <li class="depth2menu">
-
-                    </li>
-                </ul>
-            </section>
-
-
-
-            <!-- map -->
-            <section class="map-box" id="map-view"></section>
-            <!-- deal list -->
-            <section class="deal-box">
-                <div class="list-box" id="list-view">
-
-                </div>
-            </section>
+            <section class="filter-box" id="filter-view"></section>
+            <section class="map-box"    id="map-view"></section>
+            <section class="deal-box"   id="list-view"></section>
         </div>
-        <footer class="site-footer">
 
-        </footer>
+        <footer class="site-footer"></footer>
     </div>
     <button id="btn-show-list" class="none"></button>
     <button id="btn-show-map" class="none"></button>
@@ -148,15 +128,28 @@
     <script type="text/javascript" src="./menu_filter.js"></script>
     <script type="text/javascript" src="./list-view.js"></script>
     <script type="text/javascript" src="./map-view.js"></script>
+    <script type="text/javascript" src="./filter-view.js"></script>
 
     <script type="text/javascript">
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
-        var _listView = new ListView($('#list-view'));
-        var _mapView  = new MapView($('#map-view'));
+        var _listView   = new ListView($('#list-view'));
+        var _mapView    = new MapView($('#map-view'));
+        var _filterView = new FilterView($('#filter-view'), {
+            event: {
+                select: function(e){
+                    var code = $(e.target).attr('data-href');
+                    $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
+                        _cachedDealResponse = deals;
+                        _listView.render(_cachedDealResponse);
+                    });
+                }
+            }
+        });
         var _cachedDealResponse = {};
 
         _listView.display(false);
         _mapView.display(false);
+        _filterView.display(true);
 
         $('.menu-tab a').bind("click",function(e){
             _cachedDealResponse = {}; // cache clear
@@ -166,17 +159,14 @@
 
             if ($(this).attr('data-href') == "area") {
                 //지역
-                if ( $('.filter-box').css('display') == "none" ) {
-                    $('.filter-box').delay(300).slideToggle();
-                };
+                _filterView.display(false);
                 if ( $('.map-box').css('display') != "none" ) {
                     _listView.display(false);
                     _mapView.display(true);
                 };
-                $('.filter-box').hide();
             } else {
                 //내주변
-                $('.filter-box').hide(300);
+                _filterView.display(false);
                 _listView.display(false);
                 _mapView.display(true)
                 myAreaDeals();
@@ -195,58 +185,6 @@
             e.preventDefault();
             _mapView.render(_cachedDealResponse);
         });
-
-        /**@@@ 지역필터 @@@@@@@@@@@@@@@@@@@*/
-        /** menu setting ************************************************/
-        function defaultFilter () {
-            var html = "";
-            html += "<ul>"
-            _.each(menuFilter.categories, function(items,key1){
-                html += '<li><a class="depth1menu-cell" data-href="'+ items.fullCode+'"><span>'+ items.name +'</span></a></li>';
-            });
-            html += "</ul>"
-            $('.depth1menu').append(html);
-
-            //event
-            $('.depth1menu a').bind("click",function(e){
-                $('.depth1menu li').removeClass('active');
-                $(this).parent().addClass('active');
-                subFillter ( $(this).attr('data-href') );
-                e.preventDefault();
-            });
-        }
-
-        function subFillter ( code ) {
-            var html = "";
-            html += "<ul>"
-            _.each(menuFilter.categories, function(items,key1){
-                if ( items.fullCode == code ) {
-                    _.each(items.children, function(item,key2){
-                        html += '<li><a class="depth2menu-cell" data-href="'+ item.fullCode+'"><span>'+ item.name +'</span></a></li>';
-                    });
-                    return false;
-                };
-
-            });
-            html += "</ul>"
-
-            $('.depth2menu').empty();//메뉴삭제
-            $('.depth2menu').append(html);//depth2 메뉴추가
-
-            //event
-            $('.depth2menu a').bind("click",function(e){//deal목록 생성
-                var code = $(this).attr('data-href');
-                $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
-                    _cachedDealResponse = deals;
-                    // makeDealList(_cachedDealResponse);
-                    _listView.render(_cachedDealResponse);
-                });
-                e.preventDefault();
-            });
-
-        }
-
-        defaultFilter ();
 
         /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
         function myAreaDeals() {
@@ -269,7 +207,6 @@
                     centerLat: position.coords.latitude,
                     centerLon: position.coords.longitude
                 }
-                // makeDealList();
                 _listView.render(_cachedDealResponse);
             });
         }

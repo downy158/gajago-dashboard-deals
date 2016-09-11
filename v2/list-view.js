@@ -12,6 +12,8 @@ var ListView = function($el, config){
         }
     }, config);
 
+    var $listBox = $('<div class="list-box"></div>');
+
     /**
      * show control
      * @param isDisplay boolean default value true.
@@ -60,12 +62,17 @@ var ListView = function($el, config){
         });
         html.push('</ul>');
 
-        $el.empty().append(html.join(''));
+        $listBox.empty().append(html.join(''));
         baseDisplay(true);
     };
 
-    // init
-    baseDisplay(_config.init.display);
+    function init(){
+        $el.append($listBox);
+
+        baseDisplay(_config.init.display);
+    }
+
+    init();
 
     return {
         'display': baseDisplay,
