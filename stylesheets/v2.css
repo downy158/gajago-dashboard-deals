@@ -1,6 +1,99 @@
+html,body { height:100%; }
+* { -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+}
+.ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
+ul {list-style: none;}
+ul,li { padding: 0; margin: 0}
+a:hover, a:active { text-decoration:none }
+ul.LBox		{ padding:0; border:0;}
+.LBox:after	{ content:" "; display:block; clear:both;}
+.LBox > li	{ float:left; padding:0; border:0;}
+.LBox > li.li_R	{ float:right; }
+.none { display:none }
+
+/*tab*/
+.menu-tab { margin-bottom: -1px }
+.menu-tab li {
+    display: block;
+    width:50%;
+    padding: 0.8em 0;
+    box-sizing: content-box;
+    background-color:#FFF;
+}
+.menu-tab li.active { border-bottom:4px solid #1F93FF; color: #1F93FF;}
+.menu-tab a {
+    display: block;
+    width: 100%;
+    text-align: center; border-bottom:#1F93FF;
+}
+
+/*layout*/
+.herder {
+    padding: 0; margin: 0;
+    text-align: center;
+    background-color:#FFF;
+}
+.herder-title { margin: 0; padding:0.2em;    font-size:1.5em; color:#FFF; text-align: left; background:#1F93FF }
+
+/*filter-box ui*/
+.menu { display:table;    width:100%; height:100%;    margin: 0 auto; text-align: left; border-bottom:1px solid #D8D8D8; }
+.menu > li { display:table-cell; padding: 0; margin: 0; text-align: center; }
+.menu a { display: block; padding: 1em 0; }
+.filter-box-msg {    margin-top:-2px; padding:0.8em 0;    color:#FFF;     text-align: center; background:#9F9F9F }
+.depth1menu {
+    width:40%;
+    padding: 0.5em 0.1em;
+    border-right:1px solid #D8D8D8;
+}
+.depth1menu a { color:#469FFF }
+.depth1menu .active a { color:#FFF;    background-color:#1F93FF }
+.depth2menu {
+    width:60%;
+    background: #F2F2F2;
+}
+.depth2menu li { padding: 0 1.5em; text-align: left }
+.depth2menu a {
+    color: #8A8A8A;
+    border-bottom:1px solid #D0D0D0 ;
+}
+.depth2menu li:hover,.depth2menu li:active {
+    background: #DFDFDF;
+}
+.depth2menu li:hover a,.depth2menu li:active a {    color: #000}
+
+
+    /*map */
+.map_wrap {position:relative;overflow:hidden;width:98%; margin:0 }
+.radius_border{border:1px solid #919191;border-radius:5px;}
+.custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;box-sizing:content-box;}
+.custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
+.custom_typecontrol .map-btn {background:#fff;background:linear-gradient(#fff,    #e6e6e6);}
+.custom_typecontrol .map-btn:hover {background:#f5f5f5;background:linear-gradient(#f5f5f5,#e3e3e3);}
+.custom_typecontrol .map-btn:active {background:#e6e6e6;background:linear-gradient(#e6e6e6, #fff);}
+.custom_typecontrol .selected-btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+.custom_typecontrol .selected-btn:hover {color:#fff;}
+.custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#f5f5f5;}
+.custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
+.custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;box-sizing:content-box;}
+.custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
+
+#list-count {
+    padding: 10px;
+    background-color: transparent;
+}
+
+.list-box {
+    background-color: #efefef;
+    border-bottom: 1px solid white;
+}
+
 .list-box ul {
-    border-top: 1px solid lightblue;
-    background-color: #ececec;
+    border-top: 1px solid white;
+    background-color: transparent;
 }
 
 .list-box li {
@@ -8,6 +101,7 @@
     overflow: auto;
     margin-bottom: 6px;
     background-color: white;
+    box-shadow: 2px 2px 6px gray;
 }
 
 .list-box li .thumb {
@@ -25,8 +119,10 @@
 }
 
 .list-box li .deal-name,
-.list-box li .deal-desc {
-    display: inline-block;
+.list-box li .deal-desc,
+.list-box li .deal-distance,
+.list-box li .deal-price {
+    margin: 0;
 }
 
 .list-box li .deal-name {
@@ -39,6 +135,7 @@
 
 .list-box li .deal-distance {
     font-size: 14px;
+    color: #c7c7c7;
 }
 
 .list-box li .deal-price {
@@ -63,4 +160,11 @@
     border: none;
     background-position: center center;
     background-size: cover;
+    z-index: 100;
+}
+
+.ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }

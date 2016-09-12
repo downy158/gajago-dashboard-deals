@@ -57,15 +57,15 @@ var ListView = function($el, config){
 
             html.push('<li>');
             html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
-            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a><br>');
+            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a>');
             if (item.dealPointDesc) {
-                html.push('<span class="deal-desc">' + item.dealPointDesc + '</span><br>');
+                html.push('<p class="deal-desc ellipsis">' + item.dealPointDesc + '</p>');
             }
             if (item.distanceKm) {
-                html.push('<span class="deal-distance">' + item.distanceKm.toFixed(2) + 'Km</span><br>');
+                html.push('<p class="deal-distance">' + item.distanceKm.toFixed(2) + 'Km</p>');
             }
             if (item.standardPrice) {
-                html.push('<span class="deal-price">' + item.standardPrice + '</span>원<br>');
+                html.push('<p class="deal-price">' + (item.standardPrice).toLocaleString() + '원</p>');
             }
             html.push('</li>');
         });
