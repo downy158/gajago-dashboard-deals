@@ -132,8 +132,22 @@
 
     <script type="text/javascript">
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
-        var _listView   = new ListView($('#list-view'));
-        var _mapView    = new MapView($('#map-view'));
+        var _listView = new ListView($('#list-view'), {
+            event: {
+                afterShow: function(e) {
+                    $('#btn-show-map').show();
+                    $('#btn-show-list').hide();
+                }
+            }
+        });
+        var _mapView = new MapView($('#map-view'), {
+            event: {
+                afterShow: function(e) {
+                    $('#btn-show-list').show();
+                    $('#btn-show-map').hide();
+                }
+            }
+        });
         var _filterView = new FilterView($('#filter-view'), {
             event: {
                 select: function(e){
@@ -141,6 +155,7 @@
                     $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
                         _cachedDealResponse = deals;
                         _listView.render(_cachedDealResponse);
+                        _filterView.display(false);
                     });
                 }
             }
@@ -159,11 +174,9 @@
 
             if ($(this).attr('data-href') == "area") {
                 //지역
-                _filterView.display(false);
-                if ( $('.map-box').css('display') != "none" ) {
-                    _listView.display(false);
-                    _mapView.display(true);
-                };
+                _filterView.display(true);
+                _listView.display(false);
+                _mapView.display(false);
             } else {
                 //내주변
                 _filterView.display(false);
@@ -177,12 +190,14 @@
         //지도로 보기
         $('#btn-show-list').click(function(e){
             e.preventDefault();
+            _mapView.display(false);
             _listView.render(_cachedDealResponse);
         });
 
         //목록 보기
         $('#btn-show-map').click(function(e){
             e.preventDefault();
+            _listView.display(false);
             _mapView.render(_cachedDealResponse);
         });
 

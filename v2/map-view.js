@@ -1,6 +1,7 @@
 'use strict';
 
 var MapView = function($el, config){
+    var _this = this;
     var _config = _.merge({
         init : {
             display: true,
@@ -9,6 +10,11 @@ var MapView = function($el, config){
                 lon: 127.60872401345618
             },
             level: 12
+        },
+        event: {
+            afterShow: function(){
+                console.log('MapView.config.event.show is empty function.');
+            }
         }
     }, config);
 
@@ -27,6 +33,9 @@ var MapView = function($el, config){
     var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
+            if (_.isFunction(_config.event.afterShow)) {
+                _config.event.afterShow.call(_this);
+            }
         } else {
             $el.hide();
         }
@@ -41,6 +50,16 @@ var MapView = function($el, config){
         map.setDraggable(true);
 
         clusterer.clear();
+        if (!_.isEmpty(infoWindows)) {
+            _.invoke(infoWindows, 'close');
+            selectedInfoWindow = null;
+        }
+        if (!_.isEmpty(markers)) {
+            _.each(markers, function(marker){
+                marker.setMap(null);
+            });
+            markers = [];
+        }
 
         //메뉴 마커 붙이기
         _.each(data.list, function(deal){
@@ -141,8 +160,6 @@ var MapView = function($el, config){
 
             actions[action].call(this);
         });
-
-        baseDisplay(_config.init.display);
     }
 
     init();

@@ -6,9 +6,15 @@
  * @param config Object config value
  */
 var ListView = function($el, config){
+    var _this = this;
     var _config = _.merge({
         init : {
             display: true
+        },
+        event: {
+            afterShow: function(){
+                console.log('ListView.config.event.show is empty function.');
+            }
         }
     }, config);
 
@@ -21,6 +27,9 @@ var ListView = function($el, config){
     var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
+            if (_.isFunction(_config.event.afterShow)) {
+                _config.event.afterShow.call(_this);
+            }
         } else {
             $el.hide();
         }
@@ -68,8 +77,6 @@ var ListView = function($el, config){
 
     function init(){
         $el.append($listBox);
-
-        baseDisplay(_config.init.display);
     }
 
     init();
