@@ -77,6 +77,7 @@ var ListView = function($el, config){
 
     function init(){
         $el.append($listBox);
+        baseDisplay(_config.init.display);
     }
 
     init();

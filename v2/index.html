@@ -96,11 +96,10 @@
             .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
             .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;box-sizing:content-box;}
             .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
-
         </style>
     </head>
     <body>
-    <div class="Wrap">
+    <div id="board-container">
         <header class="herder">
             <h1 class="herder-title">Gajago 딜 현황판</h1>
             <nav>
@@ -125,14 +124,52 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
     <script type="text/javascript" src="https://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
-    <script type="text/javascript" src="./menu_filter.js"></script>
+    <script type="text/javascript" src="./filter-view.js"></script>
     <script type="text/javascript" src="./list-view.js"></script>
     <script type="text/javascript" src="./map-view.js"></script>
-    <script type="text/javascript" src="./filter-view.js"></script>
+    <script type="text/javascript" src="./spin.js"></script>
 
     <script type="text/javascript">
+        var _spinner = (function(){
+            var target = document.getElementById('board-container');
+            var spinner = new Spinner({
+                lines: 9 // The number of lines to draw
+                , length: 42 // The length of each line
+                , width: 18 // The line thickness
+                , radius: 57 // The radius of the inner circle
+                , scale: 1.25 // Scales overall size of the spinner
+                , corners: 0.8 // Corner roundness (0..1)
+                , color: '#000' // #rgb or #rrggbb or array of colors
+                , opacity: 0.1 // Opacity of the lines
+                , rotate: 0 // The rotation offset
+                , direction: 1 // 1: clockwise, -1: counterclockwise
+                , speed: 0.8 // Rounds per second
+                , trail: 50 // Afterglow percentage
+                , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+                , zIndex: 2e9 // The z-index (defaults to 2000000000)
+                , className: 'spinner' // The CSS class to assign to the spinner
+                , top: '50%' // Top position relative to parent
+                , left: '50%' // Left position relative to parent
+                , shadow: true // Whether to render a shadow
+                , hwaccel: true // Whether to use hardware acceleration
+                , position: 'absolute' // Element positioning
+            });
+
+            return {
+                spin: function(){
+                    spinner.spin(target);
+                },
+                stop: function(){
+                    spinner.stop();
+                }
+            };
+        })();
+
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
         var _listView = new ListView($('#list-view'), {
+            init: {
+                display: false
+            },
             event: {
                 afterShow: function(e) {
                     $('#btn-show-map').show();
@@ -141,6 +178,9 @@
             }
         });
         var _mapView = new MapView($('#map-view'), {
+            init: {
+                display: false
+            },
             event: {
                 afterShow: function(e) {
                     $('#btn-show-list').show();
@@ -149,22 +189,23 @@
             }
         });
         var _filterView = new FilterView($('#filter-view'), {
+            init: {
+                display: true
+            },
             event: {
                 select: function(e){
+                    _spinner.spin();
                     var code = $(e.target).attr('data-href');
                     $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
                         _cachedDealResponse = deals;
                         _listView.render(_cachedDealResponse);
                         _filterView.display(false);
+                        _spinner.stop();
                     });
                 }
             }
         });
         var _cachedDealResponse = {};
-
-        _listView.display(false);
-        _mapView.display(false);
-        _filterView.display(true);
 
         $('.menu-tab a').bind("click",function(e){
             _cachedDealResponse = {}; // cache clear
@@ -181,8 +222,9 @@
                 //내주변
                 _filterView.display(false);
                 _listView.display(false);
-                _mapView.display(true)
-                myAreaDeals();
+                _mapView.display(true);
+                _spinner.spin();
+                _mapView.getCurrentPosition(loadMyAreaDeals);
             }
             e.preventDefault();
         });
@@ -202,16 +244,6 @@
         });
 
         /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
-        function myAreaDeals() {
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    loadMyAreaDeals(position);
-                }, function (err) {
-                    alert('사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.');
-                });
-            }
-        }
-
         function loadMyAreaDeals(position) {
             if (!position) return;
 
@@ -222,7 +254,9 @@
                     centerLat: position.coords.latitude,
                     centerLon: position.coords.longitude
                 }
-                _listView.render(_cachedDealResponse);
+                _listView.display(false);
+                _mapView.render(_cachedDealResponse);
+                _spinner.stop();
             });
         }
 

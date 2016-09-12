@@ -18,13 +18,14 @@ var MapView = function($el, config){
         }
     }, config);
 
-    var markers = [];
-    var infoWindows = [];
-    var selectedInfoWindow;
+    var _markers = [];
+    var _infoWindows = [];
+    var _selectedInfoWindow;
 
     var mapId = $el.attr('id') + '-map';
-    var map;
-    var clusterer;
+    var _map;
+    var _clusterer;
+    var _currentPosition;
 
     /**
      * show control
@@ -33,6 +34,7 @@ var MapView = function($el, config){
     var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
+            _map.relayout();
             if (_.isFunction(_config.event.afterShow)) {
                 _config.event.afterShow.call(_this);
             }
@@ -45,20 +47,21 @@ var MapView = function($el, config){
      * rendering data
      */
     var baseRender = function(data) {
-        map.setLevel(_config.init.level);
-        map.setCenter(new daum.maps.LatLng(data.centerLat, data.centerLon)); //중심변경
-        map.setDraggable(true);
+        _map.setLevel(_config.init.level);
+        _map.setCenter(new daum.maps.LatLng(data.centerLat, data.centerLon)); //중심변경
+        _map.setDraggable(true);
 
-        clusterer.clear();
-        if (!_.isEmpty(infoWindows)) {
-            _.invoke(infoWindows, 'close');
-            selectedInfoWindow = null;
+        _clusterer.clear();
+        if (!_.isEmpty(_infoWindows)) {
+            _.each(_infoWindows, function(infoWindow){
+                infoWindow.close();
+            });
         }
-        if (!_.isEmpty(markers)) {
-            _.each(markers, function(marker){
+        if (!_.isEmpty(_markers)) {
+            _.each(_markers, function(marker){
                 marker.setMap(null);
             });
-            markers = [];
+            _markers = [];
         }
 
         //메뉴 마커 붙이기
@@ -73,8 +76,8 @@ var MapView = function($el, config){
                 'title'     : deal.dealNm,
                 'image'     : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
             });
-            marker.setMap(map);
-            markers.push(marker);
+            marker.setMap(_map);
+            _markers.push(marker);
 
             var infoWindow = new daum.maps.InfoWindow({
                 'position': dealPosition,
@@ -82,32 +85,53 @@ var MapView = function($el, config){
                     '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
                     deal.id + ' ' +deal.dealNm + '</a></div>')
             });
-            infoWindows.push(infoWindow);
+            _infoWindows.push(infoWindow);
 
             daum.maps.event.addListener(marker, 'click', function() {
-                if (!_.isEmpty(selectedInfoWindow)) {
-                    selectedInfoWindow.close();
+                if (!_.isEmpty(_selectedInfoWindow)) {
+                    _selectedInfoWindow.close();
                 }
 
-                infoWindow.open(map, marker);
-                selectedInfoWindow = infoWindow;
+                infoWindow.open(_map, marker);
+                _selectedInfoWindow = infoWindow;
             });
         });
 
-        clusterer.addMarkers(markers);
+        _clusterer.addMarkers(_markers);
 
         baseDisplay(true);
     }
 
+    /**
+     * geolocation API는 비동기로 작동합니다.
+     * 원하는 액션은 callback 함수를 사용하세요.
+     */
+    var baseGetCurrentPosition = function(callback) {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                (function(position){
+                    _currentPosition = position;
+                    if (_.isFunction(callback)) {
+                        callback.call(_this, _currentPosition);
+                    }
+                })(position);
+            }, function (err) {
+                alert('사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.');
+            });
+        }
+
+        return _currentPosition;
+    }
+
     var actions = {
         'zoom-in': function(){
-            map.setLevel(map.getLevel() - 1);
+            _map.setLevel(_map.getLevel() - 1);
         },
         'zoom-out': function(){
-            map.setLevel(map.getLevel() + 1);
+            _map.setLevel(_map.getLevel() + 1);
         },
         'map-to-roadmap': function(){
-            map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
+            _map.setMapTypeId(daum.maps.MapTypeId.ROADMAP);
             $(this)
                 .addClass('selected-btn')
                 .removeClass('map-btn')
@@ -116,7 +140,7 @@ var MapView = function($el, config){
                 .removeClass('selected-btn');
         },
         'map-to-skyview': function(){
-            map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
+            _map.setMapTypeId(daum.maps.MapTypeId.HYBRID);
             $(this)
                 .addClass('selected-btn')
                 .removeClass('map-btn')
@@ -143,13 +167,13 @@ var MapView = function($el, config){
         ];
         $el.append(html.join(''));
 
-        map = new daum.maps.Map($('#' + mapId).get(0), {
+        _map = new daum.maps.Map($('#' + mapId).get(0), {
             center: new daum.maps.LatLng(_config.init.center.lat, _config.init.center.lon),
             level : _config.init.level
         });
 
-        clusterer = new daum.maps.MarkerClusterer({
-            map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        _clusterer = new daum.maps.MarkerClusterer({
+            map: _map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
             averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
             minLevel: 12 // 클러스터 할 최소 지도 레벨
         });
@@ -160,12 +184,15 @@ var MapView = function($el, config){
 
             actions[action].call(this);
         });
+
+        baseDisplay(_config.init.display);
     }
 
     init();
 
     return {
         'display': baseDisplay,
-        'render': baseRender
+        'render': baseRender,
+        'getCurrentPosition': baseGetCurrentPosition
     };
 };
