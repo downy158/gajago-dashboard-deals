@@ -11,9 +11,12 @@ var MapView = function($el, config){
             },
             level: 12
         },
+        fit : function(){
+            console.log('MapView.config.event.fit is empty function.');
+        },
         event: {
             afterShow: function(){
-                console.log('MapView.config.event.show is empty function.');
+                console.log('MapView.config.event.afterShow is empty function.');
             }
         }
     }, config);
@@ -22,7 +25,7 @@ var MapView = function($el, config){
     var _infoWindows = [];
     var _selectedInfoWindow;
 
-    var mapId = $el.attr('id') + '-map';
+    var _mapId = $el.attr('id') + '-map';
     var _map;
     var _clusterer;
     var _currentPosition;
@@ -34,6 +37,13 @@ var MapView = function($el, config){
     var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
+
+            if (_.isFunction(_config.event.fit)) {
+                var dimension = _config.event.fit.call(_this);
+                if (dimension.width  > 0) $el.find('#' + _mapId).width(dimension.width);
+                if (dimension.height > 0) $el.find('#' + _mapId).height(dimension.height);
+            }
+
             _map.relayout();
             if (_.isFunction(_config.event.afterShow)) {
                 _config.event.afterShow.call(_this);
@@ -67,33 +77,51 @@ var MapView = function($el, config){
         //메뉴 마커 붙이기
         _.each(data.list, function(deal){
             var images = {
-                    'HOTEL': '../images/marker-hotel.png',
-                    'DEAL' : '../images/marker-leisure.png'
+                'HOTEL': 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/pension.png',
+                'DEAL' : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/gajago-pin.png'
             };
             var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
             var marker = new daum.maps.Marker({
                 'position': dealPosition,
-                'title'     : deal.dealNm,
-                'image'     : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(26, 38))
+                'title'   : deal.dealNm,
+                'image'   : new daum.maps.MarkerImage(images[deal.dealType], new daum.maps.Size(40, 42))
             });
             marker.setMap(_map);
+            marker.data = deal;
             _markers.push(marker);
 
-            var infoWindow = new daum.maps.InfoWindow({
-                'position': dealPosition,
-                'content' : ('<div class="ellipsis">' +
-                    '<a href="https://www.thegajago.com/deals/' + deal.id + '" target="_blank">#' +
-                    deal.id + ' ' +deal.dealNm + '</a></div>')
-            });
-            _infoWindows.push(infoWindow);
-
             daum.maps.event.addListener(marker, 'click', function() {
-                if (!_.isEmpty(_selectedInfoWindow)) {
-                    _selectedInfoWindow.close();
+                if (_selectedInfoWindow instanceof jQuery) _selectedInfoWindow.remove();
+
+                var item = marker.data;
+                var imageSrc = null;
+                try {
+                    imageSrc = item.listImageJson.list[0].image.src
+                } catch(ex) {
+                    console.log('Malformed listImageJson.', item);
                 }
 
-                infoWindow.open(_map, marker);
-                _selectedInfoWindow = infoWindow;
+                if (imageSrc === null) return;
+
+                var html = [];
+                html.push('<div class="map-info-window">');
+                html.push('<div class="thumb" style="background-image: url(', imageSrc, ');"></div>');
+                html.push('<p class="ellipsis"><a class="deal-name" href="https://www.thegajago.com/deals/', item.id, '" target="_new">', item.dealNm, '</a></p>');
+                if (item.dealPointDesc) {
+                    html.push('<p class="deal-desc ellipsis">', item.dealPointDesc, '</p>');
+                }
+                if (item.distanceKm) {
+                    html.push('<p class="deal-distance">', item.distanceKm.toFixed(2), 'Km</p>');
+                }
+                if (item.standardPrice) {
+                    html.push('<p class="deal-price">', (item.standardPrice).toLocaleString(), '원</p>');
+                }
+                html.push('</div>');
+
+                _selectedInfoWindow = $(html.join(''));
+                $el.append(_selectedInfoWindow);
+
+                _config.event.markerClick.call(marker);
             });
         });
 
@@ -154,7 +182,7 @@ var MapView = function($el, config){
     var init = function(){
         var html = [
             '<div class="map_wrap">',
-                '<div id="', mapId, '" style="height:400px;"></div>',
+                '<div id="', _mapId, '" style="height:400px;"></div>',
                 '<div class="custom_typecontrol radius_border">',
                     '<span data-action="map-to-roadmap" class="selected-btn">지도</span>',
                     '<span data-action="map-to-skyview" class="map-btn">스카이뷰</span>',
@@ -167,7 +195,7 @@ var MapView = function($el, config){
         ];
         $el.append(html.join(''));
 
-        _map = new daum.maps.Map($('#' + mapId).get(0), {
+        _map = new daum.maps.Map($('#' + _mapId).get(0), {
             center: new daum.maps.LatLng(_config.init.center.lat, _config.init.center.lon),
             level : _config.init.level
         });

@@ -48,24 +48,24 @@ var ListView = function($el, config){
         _.each(data.list, function(item){
             var imageSrc = null;
             try {
-                    imageSrc = item.listImageJson.list[0].image.src
+                imageSrc = item.listImageJson.list[0].image.src
             } catch(ex) {
-                    console.log('Malformed listImageJson.', item);
+                console.log('Malformed listImageJson.', item);
             }
 
             if (imageSrc === null) return;
 
             html.push('<li>');
-            html.push('<div class="thumb" style="background-image: url(' + imageSrc + ');"></div>');
-            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/' + item.id + '" target="_new">' + item.dealNm + '</a>');
+            html.push('<div class="thumb" style="background-image: url(', imageSrc, ');"></div>');
+            html.push('<a class="deal-name" href="https://www.thegajago.com/deals/', item.id, '" target="_new">', item.dealNm, '</a>');
             if (item.dealPointDesc) {
-                html.push('<p class="deal-desc ellipsis">' + item.dealPointDesc + '</p>');
+                html.push('<p class="deal-desc ellipsis">', item.dealPointDesc, '</p>');
             }
             if (item.distanceKm) {
-                html.push('<p class="deal-distance">' + item.distanceKm.toFixed(2) + 'Km</p>');
+                html.push('<p class="deal-distance">', item.distanceKm.toFixed(2), 'Km</p>');
             }
             if (item.standardPrice) {
-                html.push('<p class="deal-price">' + (item.standardPrice).toLocaleString() + '원</p>');
+                html.push('<p class="deal-price">', (item.standardPrice).toLocaleString(), '원</p>');
             }
             html.push('</li>');
         });

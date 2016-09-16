@@ -29,8 +29,6 @@
             <section class="map-box"    id="map-view"></section>
             <section class="deal-box"   id="list-view"></section>
         </div>
-
-        <footer class="site-footer"></footer>
     </div>
     <button id="btn-show-list" class="none"></button>
     <button id="btn-show-map" class="none"></button>
@@ -51,7 +49,7 @@
                 , length: 42 // The length of each line
                 , width: 18 // The line thickness
                 , radius: 57 // The radius of the inner circle
-                , scale: 1.25 // Scales overall size of the spinner
+                , scale: 0.8 // Scales overall size of the spinner
                 , corners: 0.8 // Corner roundness (0..1)
                 , color: '#000' // #rgb or #rrggbb or array of colors
                 , opacity: 0.1 // Opacity of the lines
@@ -85,23 +83,37 @@
                 display: false
             },
             event: {
-                afterShow: function(e) {
+                afterShow: function() {
                     $('#btn-show-map').show();
                     $('#btn-show-list').hide();
                 }
             }
         });
+
         var _mapView = new MapView($('#map-view'), {
             init: {
                 display: false
             },
             event: {
-                afterShow: function(e) {
+                afterShow: function() {
                     $('#btn-show-list').show();
                     $('#btn-show-map').hide();
+                },
+                fit: function() {
+                    var fullHeight = $('body').innerHeight();
+                    var siblingsHeight = $('header').outerHeight();
+
+                    return {
+                        width: $('body').width(),
+                        height: (fullHeight - siblingsHeight)
+                    };
+                },
+                markerClick: function() {
+                    $('#btn-show-list').css('bottom', $('.map-info-window').outerHeight() + 10);
                 }
             }
         });
+
         var _filterView = new FilterView($('#filter-view'), {
             init: {
                 display: true
