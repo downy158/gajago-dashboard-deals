@@ -9,7 +9,7 @@ var MapView = function($el, config){
                 lat: 36.37512908430549,
                 lon: 127.60872401345618
             },
-            level: 12
+            level: 11
         },
         fit : function(){
             console.log('MapView.config.event.fit is empty function.');
@@ -212,7 +212,7 @@ var MapView = function($el, config){
         _clusterer = new daum.maps.MarkerClusterer({
             map: _map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
             averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-            minLevel: 12 // 클러스터 할 최소 지도 레벨
+            minLevel: 10 // 클러스터 할 최소 지도 레벨
         });
 
         $el.on('click', '[data-action]', function(e){
