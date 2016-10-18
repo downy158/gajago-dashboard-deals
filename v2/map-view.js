@@ -169,15 +169,16 @@ var MapView = function($el, config){
             // }
             if ( data.winning ) { // 마일리지 당첨
                 html += '<img alt="마일리지 '+data.maileage+'" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-m-'+data.maileage+'.gif">'
-                html += '<a href="https://www.thegajago.com/mileage" class="btn btn-link">적립금보기</a>'
+                html += '<a href="https://www.thegajago.com/mileage" target="_blank" class="btn btn-link">적립금보기</a>'
             } else if ( !data.winning && data.message ) {//  이벤트 종료(소진) & 최대 당첨횟수 제약
                 html += '<p>'+ data.message + '</p>'
-                html += '<a href="https://www.thegajago.com/mileage" class="btn btn-link">적립금보기</a>'
+                html += '<a href="https://www.thegajago.com/mileage" target="_blank" class="btn btn-link">적립금보기</a>'
             } else if ( data.coffee ) {// 커피당첨
                 html += '<img alt="커피당첨" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-c.gif">'
-                html += '<a href="https://www.thegajago.com/notices/158" class="btn btn-link">사용방법보기</a>'
+                html += '<a href="https://www.thegajago.com/notices/158" target="_blank" class="btn btn-link">사용방법보기</a>'
             } else if ( data.hotel ) {// 숙박당첨
-
+                html += '<img alt="숙박당첨" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-i.gif">'
+                html += '<a href="https://www.thegajago.com/notices/158" target="_blank" class="btn btn-link">사용방법보기</a>'
             } else {// 꽝
                 html += '<img alt="꽝" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-0.gif">'
                 html += '<button type="button" class="btn btn-link btn-tip">힌트보러가기</button>'
@@ -218,26 +219,12 @@ var MapView = function($el, config){
                         '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
                         '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
                         '<div class="event-links">' +
-                        '<button class="btn btn-tip btn-event-mileage">적립금 보러가기</button>' +
-                        '<button class="btn btn-tip btn-event-gajado">첫 페이지로</button>' +
-                        '<button class="btn btn-tip btn-event-return">그만하기</button>' +
+                        '<a href="https://www.thegajago.com/mileage" target="_blank" class="btn btn-tip btn-event-mileage">적립금 보러가기</a>' +
+                        '<a href="https://www.thegajago.com/categories/112" target="_blank" class="btn btn-tip btn-event-gajado">첫 페이지로</a>' +
+                        '<a href="https://www.thegajago.com/" target="_blank" class="btn btn-tip btn-event-return">그만하기</a>' +
                         '</div>' +
                         '</div>'
                     _this.$.body.empty().append(templ);
-                    //적립금
-                    $('.btn-event-mileage').click(function (e) {
-                        $(location).attr('href','https://www.thegajago.com/mileage');
-                    });
-
-                    //가자고 '가자도' 프로모션 페이지
-                    $('.btn-event-gajado').click(function (e) {
-                        $(location).attr('href','https://www.thegajago.com/categories/112');
-                    });
-
-                    //가자도 종료
-                    $('.btn-event-return').click(function (e) {
-                        $(location).attr('href','https://www.thegajago.com/');
-                    });
 
                     //창닫기
                     $('.btn-close').click(function () {

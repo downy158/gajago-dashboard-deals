@@ -240,27 +240,12 @@
                             '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
                             '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
                             '<div class="event-links">' +
-                                '<button class="btn btn-tip btn-event-mileage">적립금 보러가기</button>' +
-                                '<button class="btn btn-tip btn-event-gajado">첫 페이지로</button>' +
-                                '<button class="btn btn-tip btn-event-return">그만하기</button>' +
+                                '<a href="https://www.thegajago.com/mileage" target="_blank" class="btn btn-tip btn-event-mileage">적립금 보러가기</a>' +
+                                '<a href="https://www.thegajago.com/categories/112" target="_blank" class="btn btn-tip btn-event-gajado">첫 페이지로</a>' +
+                                '<a href="https://www.thegajago.com/" target="_blank" class="btn btn-tip btn-event-return">그만하기</a>' +
                              '</div>' +
                         '</div>'
                 this.$.body.append(templ);
-
-                //적립금
-                $('.btn-event-mileage').click(function (e) {
-                    $(location).attr('href','https://www.thegajago.com/mileage');
-                });
-
-                //가자고 '가자도' 프로모션 페이지
-                $('.btn-event-gajado').click(function (e) {
-                    $(location).attr('href','https://www.thegajago.com/categories/112');
-                });
-
-                //가자도 종료
-                $('.btn-event-return').click(function (e) {
-                    $(location).attr('href','https://www.thegajago.com/');
-                });
 
                 //창닫기
                 $('.btn-close').click(function () {
