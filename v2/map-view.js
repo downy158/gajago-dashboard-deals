@@ -21,6 +21,10 @@ var MapView = function($el, config){
         }
     }, config);
 
+    //parameta token 취득
+
+
+
     var _markers = [];
     var _infoWindows = [];
     var _selectedInfoWindow;
@@ -96,6 +100,7 @@ var MapView = function($el, config){
             marker.data = deal;
             _markers.push(marker);
 
+
             daum.maps.event.addListener(marker, 'click', function() {
                 if (_selectedInfoWindow instanceof jQuery) _selectedInfoWindow.remove();
 
@@ -131,6 +136,9 @@ var MapView = function($el, config){
                 $el.append(_selectedInfoWindow);
 
                 _config.event.markerClick.call(marker);
+
+                //보물찾기
+                eventChk();
             });
         });
 
@@ -138,7 +146,108 @@ var MapView = function($el, config){
 
         baseDisplay(true);
     }
+    /**
+     * event 보물찾기 2016-10-18
+     */
+    var _root = this;
+    _root.tips = [
+        "내 위치 설정을 ON하면 보물찾기가 쉬워져!",
+        "SNS에 보물찾기 이벤트를 공유하면 확률이 UP!",
+        "심호흡을 한번하고 평정심을 유지하면 확률이 UP!",
+        "상품을 구매하면 확률이 UP!"
+    ]
+    var modal = new ax5.ui.modal();
+    var mask = new ax5.ui.mask();
+    var eventChk = function ( ) {
+        var html = '<div class="event-view">';
+        $.get('http://220.70.71.58:10391/events/hunt'+location.search, function(data){
+            // console.log("data",data)
+            // data = {
+            //     'winning' : true,
+            //     'maileage': 5000,
+            //     'coffee'  : false
+            // }
+            if ( data.winning ) { // 마일리지 당첨
+                html += '<img alt="마일리지 '+data.maileage+'" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-m-'+data.maileage+'.gif">'
+                html += '<a href="https://www.thegajago.com/mileage" class="btn btn-link">적립금보기</a>'
+            } else if ( !data.winning && data.message ) {//  이벤트 종료(소진) & 최대 당첨횟수 제약
+                html += '<p>'+ data.message + '</p>'
+                html += '<a href="https://www.thegajago.com/mileage" class="btn btn-link">적립금보기</a>'
+            } else if ( data.coffee ) {// 커피당첨
+                html += '<img alt="커피당첨" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-c.gif">'
+                html += '<a href="https://www.thegajago.com/notices/158" class="btn btn-link">사용방법보기</a>'
+            } else if ( data.hotel ) {// 숙박당첨
 
+            } else {// 꽝
+                html += '<img alt="꽝" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/event-result-0.gif">'
+                html += '<button type="button" class="btn btn-link btn-tip">힌트보러가기</button>'
+            };
+            html += '</div>';
+            mask.open();
+            modal.open({
+                width:320,
+                height:400,
+                onStateChanged: function () {
+                    // console.log(this);
+                    if ( this.state == "close") {
+                        mask.close();
+                    };
+                }
+            }, function () {
+                var _this = this;
+                var templ = ''+
+                    '<div class="event">'+
+                    '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-dark.png"></button>'+
+                    '<div class="event-contents">'+html+'</div>' +
+                    '</div>';
+                this.$.body.append(templ);
+
+                //창닫기
+                $('.btn-close').click(function () {
+                    modal.close();
+                    mask.close();
+                });
+
+
+
+                //힌트보기
+                $('.btn-tip').click(function(){
+                    var tipNum = _.random(_root.tips.length-1);
+                    var templ = ''+
+                        '<div class="event event-dark">'+
+                        '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
+                        '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
+                        '<div class="event-links">' +
+                        '<button class="btn btn-tip btn-event-mileage">적립금 보러가기</button>' +
+                        '<button class="btn btn-tip btn-event-gajado">첫 페이지로</button>' +
+                        '<button class="btn btn-tip btn-event-return">그만하기</button>' +
+                        '</div>' +
+                        '</div>'
+                    _this.$.body.empty().append(templ);
+                    //적립금
+                    $('.btn-event-mileage').click(function (e) {
+                        $(location).attr('href','https://www.thegajago.com/mileage');
+                    });
+
+                    //가자고 '가자도' 프로모션 페이지
+                    $('.btn-event-gajado').click(function (e) {
+                        $(location).attr('href','https://www.thegajago.com/categories/112');
+                    });
+
+                    //가자도 종료
+                    $('.btn-event-return').click(function (e) {
+                        $(location).attr('href','https://www.thegajago.com/');
+                    });
+
+                    //창닫기
+                    $('.btn-close').click(function () {
+                        modal.close();
+                        mask.close();
+                    });
+                })
+            });
+        });
+    };
     /**
      * geolocation API는 비동기로 작동합니다.
      * 원하는 액션은 callback 함수를 사용하세요.

@@ -67,6 +67,9 @@ var ListView = function($el, config){
             if (item.standardPrice) {
                 html.push('<p class="deal-price">', (item.standardPrice).toLocaleString(), '원</p>');
             }
+            if (item.reviewPoint > 0) {
+                html.push('<p class="deal-star">' + (item.reviewPoint).toLocaleString() + '</p>');
+            }
             html.push('</li>');
         });
         html.push('</ul>');

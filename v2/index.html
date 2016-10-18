@@ -6,7 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>가자도 by leisureq</title>
-
+        <link rel="stylesheet" type="text/css" href="ax5modal.css"/>
+        <link rel="stylesheet" type="text/css" href="ax5mask.css"/>
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
@@ -32,8 +33,11 @@
             <section class="deal-box"   id="list-view"></section>
         </div>
     </div>
-    <button id="btn-show-list" class="none"></button>
-    <button id="btn-show-map" class="none"></button>
+    <div class="control-btn">
+        <button id="btn-event-tip"></button>
+        <button id="btn-show-list" class="none"></button>
+        <button id="btn-show-map" class="none"></button>
+    </div>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
@@ -42,6 +46,9 @@
     <script type="text/javascript" src="./list-view.js"></script>
     <script type="text/javascript" src="./map-view.js"></script>
     <script type="text/javascript" src="./spin.js"></script>
+    <script type="text/javascript" src="ax5core.min.js"></script>
+    <script type="text/javascript" src="ax5mask.min.js"></script>
+    <script type="text/javascript" src="ax5modal.min.js"></script>
 
     <script type="text/javascript">
         var _spinner = (function(){
@@ -200,6 +207,67 @@
 
             $('.header-logo img').click(function(){
                 location.reload();
+            });
+        });
+
+        /**
+         * event 보물찾기 2016-10-18
+         */
+        var _root = this;
+        _root.tips = [
+            "내 위치 설정을 ON하면 보물찾기가 쉬워져!",
+            "SNS에 보물찾기 이벤트를 공유하면 확률이 UP!",
+            "심호흡을 한번하고 평정심을 유지하면 확률이 UP!",
+            "상품을 구매하면 확률이 UP!"
+        ]
+        var modal = new ax5.ui.modal();
+        var mask = new ax5.ui.mask();
+        $('#btn-event-tip').click(function(e){
+            mask.open();
+            modal.open({
+                width:320,
+                height:400,
+                onStateChanged: function () {
+                    //console.log(this);
+                    if ( this.state == "close") {
+                        mask.close();
+                    }
+                }
+            }, function () {
+                var tipNum = _.random(_root.tips.length-1);
+                var templ = ''+
+                        '<div class="event event-dark">'+
+                            '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
+                            '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
+                            '<div class="event-links">' +
+                                '<button class="btn btn-tip btn-event-mileage">적립금 보러가기</button>' +
+                                '<button class="btn btn-tip btn-event-gajado">첫 페이지로</button>' +
+                                '<button class="btn btn-tip btn-event-return">그만하기</button>' +
+                             '</div>' +
+                        '</div>'
+                this.$.body.append(templ);
+
+                //적립금
+                $('.btn-event-mileage').click(function (e) {
+                    $(location).attr('href','https://www.thegajago.com/mileage');
+                });
+
+                //가자고 '가자도' 프로모션 페이지
+                $('.btn-event-gajado').click(function (e) {
+                    $(location).attr('href','https://www.thegajago.com/categories/112');
+                });
+
+                //가자도 종료
+                $('.btn-event-return').click(function (e) {
+                    $(location).attr('href','https://www.thegajago.com/');
+                });
+
+                //창닫기
+                $('.btn-close').click(function () {
+                    modal.close();
+                    mask.close();
+                });
+
             });
         });
     </script>
