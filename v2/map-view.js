@@ -83,7 +83,8 @@ var MapView = function($el, config){
         _.each(data.list, function(deal){
             var images = {
                 'HOTEL': 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/hotel-v1.png',
-                'DEAL' : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/leisure-v1.png'
+                'DEAL' : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/leisure-v1.png',
+                'SEL'  : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/gajago-pin.png'
             };
             var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
             var marker = new daum.maps.Marker({
@@ -97,6 +98,9 @@ var MapView = function($el, config){
 
             daum.maps.event.addListener(marker, 'click', function() {
                 if (_selectedInfoWindow instanceof jQuery) _selectedInfoWindow.remove();
+
+                var selectedMarkerImage = new daum.maps.MarkerImage(images['SEL'], new daum.maps.Size(40, 42));
+                marker.setImage(selectedMarkerImage);
 
                 var item = marker.data;
                 var imageSrc = null;
