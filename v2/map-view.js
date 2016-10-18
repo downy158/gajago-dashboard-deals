@@ -82,8 +82,8 @@ var MapView = function($el, config){
         //메뉴 마커 붙이기
         _.each(data.list, function(deal){
             var images = {
-                'HOTEL': 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/pension.png',
-                'DEAL' : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/gajago-pin.png'
+                'HOTEL': 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/hotel-v1.png',
+                'DEAL' : 'https://s3.ap-northeast-2.amazonaws.com/production-gajago-static/images/map-pins/leisure-v1.png'
             };
             var dealPosition = new daum.maps.LatLng(deal.lat, deal.lon);
             var marker = new daum.maps.Marker({

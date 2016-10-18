@@ -126,7 +126,7 @@
                     var code = $(e.target).attr('data-href');
                     $.get('https://beta.thegajago.com/map/region/' + code, function(deals){
                         _cachedDealResponse = deals;
-                        _listView.render(_cachedDealResponse);
+                        _mapView.render(_cachedDealResponse);
                         _filterView.display(false);
                         _spinner.stop();
                     });
@@ -189,15 +189,17 @@
         }
 
         $(function(){
-            _mapView.mapAdjust({ level : 14 });
             _spinner.spin();
-            $.get('https://beta.thegajago.com/map/region/00', function(deals){
+            $.get('https://beta.thegajago.com/map/region/01', function(deals){
                 _cachedDealResponse = deals;
                 _mapView.render(_cachedDealResponse);
-                _mapView.mapAdjust({ level : 14 });
                 _listView.display(false);
                 _filterView.display(false);
                 _spinner.stop();
+            });
+
+            $('.header-logo img').click(function(){
+                location.reload();
             });
         });
     </script>
