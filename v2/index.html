@@ -94,7 +94,7 @@
 
         var _mapView = new MapView($('#map-view'), {
             init: {
-                display: false
+                display: true
             },
             event: {
                 afterShow: function() {
@@ -118,13 +118,13 @@
 
         var _filterView = new FilterView($('#filter-view'), {
             init: {
-                display: true
+                display: false
             },
             event: {
                 select: function(e){
                     _spinner.spin();
                     var code = $(e.target).attr('data-href');
-                    $.get('https://alpha-www.thegajago.com/map/region/'+code, function(deals){
+                    $.get('https://beta.thegajago.com/map/region/' + code, function(deals){
                         _cachedDealResponse = deals;
                         _listView.render(_cachedDealResponse);
                         _filterView.display(false);
@@ -176,7 +176,7 @@
             if (!position) return;
 
             var params = { lat: position.coords.latitude, lon: position.coords.longitude };
-            $.get('https://alpha-www.thegajago.com/map/deals', params, function(deals){
+            $.get('https://beta.thegajago.com/map/deals', params, function(deals){
                 _cachedDealResponse = {
                     list: deals,
                     centerLat: position.coords.latitude,
@@ -188,7 +188,18 @@
             });
         }
 
-        //event
+        $(function(){
+            _mapView.mapAdjust({ level : 14 });
+            _spinner.spin();
+            $.get('https://beta.thegajago.com/map/region/00', function(deals){
+                _cachedDealResponse = deals;
+                _mapView.render(_cachedDealResponse);
+                _mapView.mapAdjust({ level : 14 });
+                _listView.display(false);
+                _filterView.display(false);
+                _spinner.stop();
+            });
+        });
     </script>
     </body>
 </html>

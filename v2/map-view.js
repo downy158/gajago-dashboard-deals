@@ -53,6 +53,11 @@ var MapView = function($el, config){
         }
     }
 
+    var baseMapAdjust = function(config){
+        if (config.center) _map.setCenter(new daum.maps.LatLng(config.lat, config.lon));
+        if (config.level)  _map.setLevel(config.level);
+    }
+
     /**
      * rendering data
      */
@@ -221,6 +226,7 @@ var MapView = function($el, config){
     return {
         'display': baseDisplay,
         'render': baseRender,
-        'getCurrentPosition': baseGetCurrentPosition
+        'getCurrentPosition': baseGetCurrentPosition,
+        'mapAdjust': baseMapAdjust
     };
 };
