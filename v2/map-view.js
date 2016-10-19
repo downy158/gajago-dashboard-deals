@@ -119,7 +119,8 @@ var MapView = function($el, config){
 
                 var html = [];
                 html.push('<div class="map-info-window">');
-                html.push('<div class="thumb" style="background-image: url(', imageSrc, ');"></div>');
+                html.push('<div class="thumb" style="background-image: url(', imageSrc, ');">',
+                                '<a href="https://www.thegajago.com/deals/', item.id, '" target="_new" style="display:block;height:100%;"></a></div>');
                 html.push('<p class="ellipsis"><a class="deal-name" href="https://www.thegajago.com/deals/', item.id, '" target="_new">', item.dealNm, '</a></p>');
                 if (item.dealPointDesc) {
                     html.push('<p class="deal-desc ellipsis">', item.dealPointDesc, '</p>');
