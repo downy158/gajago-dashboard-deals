@@ -137,8 +137,11 @@ var MapView = function($el, config){
 
                 _config.event.markerClick.call(marker);
 
+                if (item.isChecked) return;
+
                 //보물찾기
-                eventChk(item);
+                eventChk();
+                item.isChecked = true;
             });
         });
 
@@ -158,13 +161,9 @@ var MapView = function($el, config){
     ]
     var modal = new ax5.ui.modal();
     var mask = new ax5.ui.mask();
-    var eventChk = function ( item ) {
+    var eventChk = function () {
         var html = '<div class="event-view">';
-        var param = {
-            token : location.search.replace('?token=', ''),
-            dealId: item.id
-        };
-        $.get('http://220.70.71.58:10391/events/hunt', param, function(data){
+        $.get('http://220.70.71.58:10391/events/hunt' + location.search, function(data){
             // console.log("data",data)
             // data = {
             //     'winning' : true,
