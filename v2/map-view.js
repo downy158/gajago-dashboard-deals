@@ -252,7 +252,16 @@ var MapView = function($el, config){
                     }
                 })(position);
             }, function (err) {
-                alert('사용자 위치를 사용할 수 없습니다. 위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.');
+                alert('사용자 위치를 사용할 수 없습니다.\n위치사용을 허용해주시면 보다 나은 서비스를 이용하실 수 있습니다.\n-- 서울을 기본으로 검색합니다. --');
+                if (_.isFunction(callback)) {
+                    var defaultPosition = {
+                        coords: {
+                            latitude: 37.56681519476317,
+                            longitude: 126.97866358044901
+                        }
+                    };
+                    callback.call(_this, defaultPosition);
+                }
             });
         }
 
