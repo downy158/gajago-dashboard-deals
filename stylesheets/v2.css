@@ -142,11 +142,13 @@ ul.LBox		{ padding:0; border:0;}
 .list-box li .deal-distance {
     font-size: 14px;
     color: #c7c7c7;
+    float: left;
 }
 
 .list-box li .deal-price {
     font-size: 14px;
     color: #FF5565;
+    text-align: right;
 }
 
 .control-btn {
