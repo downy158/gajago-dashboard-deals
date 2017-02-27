@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>가자도 by leisureq</title>
+        <link rel="stylesheet" type="text/css" href="ax5modal.css"/>
+        <link rel="stylesheet" type="text/css" href="ax5mask.css"/>
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+        <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../stylesheets/v2.css" media="screen">
+    </head>
+    <body>
+    <div id="board-container">
+        <header class="header">
+            <div class="header-logo">
+                <img alt="가자도" title="가자도" src="https://s3.ap-northeast-2.amazonaws.com/gajado/images/gajado-v1-x1.png" />
+            </div>
+            <nav>
+                <ul class="LBox menu-tab">
+                    <li class="active"><a data-href="area">지역</a></li>
+                    <li><a data-href="myarea">내주변</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content">
+            <section class="filter-box" id="filter-view"></section>
+            <section class="map-box"    id="map-view"></section>
+            <section class="deal-box"   id="list-view"></section>
+        </div>
+    </div>
+    <div class="control-btn">
+        <button id="btn-event-tip"></button>
+        <button id="btn-show-list" class="none"></button>
+        <button id="btn-show-map" class="none"></button>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.min.js"></script>
+    <script type="text/javascript" src="https://apis.daum.net/maps/maps3.js?apikey=362020f21637d2827594370aa32c3ee4&libraries=services,clusterer"></script>
+    <script type="text/javascript" src="./filter-view.js"></script>
+    <script type="text/javascript" src="./list-view.js"></script>
+    <script type="text/javascript" src="./map-view.js"></script>
+    <script type="text/javascript" src="./spin.js"></script>
+    <script type="text/javascript" src="ax5core.min.js"></script>
+    <script type="text/javascript" src="ax5mask.min.js"></script>
+    <script type="text/javascript" src="ax5modal.min.js"></script>
+
+    <script type="text/javascript">
+        var _spinner = (function(){
+            var target = document.getElementById('board-container');
+            var spinner = new Spinner({
+                lines: 9 // The number of lines to draw
+                , length: 42 // The length of each line
+                , width: 18 // The line thickness
+                , radius: 57 // The radius of the inner circle
+                , scale: 0.8 // Scales overall size of the spinner
+                , corners: 0.8 // Corner roundness (0..1)
+                , color: '#000' // #rgb or #rrggbb or array of colors
+                , opacity: 0.1 // Opacity of the lines
+                , rotate: 0 // The rotation offset
+                , direction: 1 // 1: clockwise, -1: counterclockwise
+                , speed: 0.8 // Rounds per second
+                , trail: 50 // Afterglow percentage
+                , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+                , zIndex: 2e9 // The z-index (defaults to 2000000000)
+                , className: 'spinner' // The CSS class to assign to the spinner
+                , top: '50%' // Top position relative to parent
+                , left: '50%' // Left position relative to parent
+                , shadow: true // Whether to render a shadow
+                , hwaccel: true // Whether to use hardware acceleration
+                , position: 'absolute' // Element positioning
+            });
+
+            return {
+                spin: function(){
+                    spinner.spin(target);
+                },
+                stop: function(){
+                    spinner.stop();
+                }
+            };
+        })();
+
+        /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
+        var _listView = new ListView($('#list-view'), {
+            init: {
+                display: false
+            },
+            event: {
+                afterShow: function() {
+                    $('#btn-show-map').show();
+                    $('#btn-show-list').hide();
+                }
+            }
+        });
+
+        var _mapView = new MapView($('#map-view'), {
+            init: {
+                display: true
+            },
+            event: {
+                afterShow: function() {
+                    $('#btn-show-list').show();
+                    $('#btn-show-map').hide();
+                },
+                fit: function() {
+                    var fullHeight = $('body').innerHeight();
+                    var siblingsHeight = $('header').outerHeight();
+
+                    return {
+                        width: $('body').width(),
+                        height: (fullHeight - siblingsHeight)
+                    };
+                },
+                markerClick: function() {
+                    $('#btn-show-list').css('bottom', $('.map-info-window').outerHeight() + 10);
+                }
+            }
+        });
+
+        var _filterView = new FilterView($('#filter-view'), {
+            init: {
+                display: false
+            },
+            event: {
+                select: function(e){
+                    _spinner.spin();
+                    var code = $(e.target).attr('data-href');
+                    $.get('https://beta.thegajago.com/map/region/' + code, function(deals){
+                        _cachedDealResponse = deals;
+                        _mapView.render(_cachedDealResponse);
+                        _filterView.display(false);
+                        _spinner.stop();
+                    });
+                }
+            }
+        });
+        var _cachedDealResponse = {};
+
+        $('.menu-tab a').bind("click",function(e){
+            _cachedDealResponse = {}; // cache clear
+
+            $('.menu-tab li').removeClass('active');
+            $(this).parent().addClass('active');
+
+            if ($(this).attr('data-href') == "area") {
+                //지역
+                _filterView.display(true);
+                _listView.display(false);
+                _mapView.display(false);
+            } else {
+                //내주변
+                _filterView.display(false);
+                _listView.display(false);
+                _mapView.display(true);
+                _spinner.spin();
+                _mapView.getCurrentPosition(loadMyAreaDeals);
+            }
+            e.preventDefault();
+        });
+
+        //지도로 보기
+        $('#btn-show-list').click(function(e){
+            e.preventDefault();
+            _mapView.display(false);
+            _listView.render(_cachedDealResponse);
+        });
+
+        //목록 보기
+        $('#btn-show-map').click(function(e){
+            e.preventDefault();
+            _listView.display(false);
+            _mapView.render(_cachedDealResponse);
+        });
+
+        /**@@@ 내주변    @@@@@@@@@@@@@@@@@@@*/
+        function loadMyAreaDeals(position) {
+            if (!position) return;
+
+            var params = { lat: position.coords.latitude, lon: position.coords.longitude };
+            $.get('https://beta.thegajago.com/map/deals', params, function(deals){
+                _cachedDealResponse = {
+                    list: deals,
+                    centerLat: position.coords.latitude,
+                    centerLon: position.coords.longitude
+                }
+                _listView.display(false);
+                _mapView.render(_cachedDealResponse);
+                _spinner.stop();
+            });
+        }
+
+        $(function(){
+            _spinner.spin();
+            $.get('https://beta.thegajago.com/map/region/01', function(deals){
+                _cachedDealResponse = deals;
+                _mapView.render(_cachedDealResponse);
+                _listView.display(false);
+                _filterView.display(false);
+                _spinner.stop();
+            });
+
+            $('.header-logo img').click(function(){
+                location.reload();
+            });
+        });
+
+        /**
+         * event 보물찾기 2016-10-18
+         */
+        var _root = this;
+        _root.tips = [
+            "내 위치 설정을 ON하면 보물찾기가 쉬워져!",
+            "SNS에 보물찾기 이벤트를 공유하면 확률이 UP!",
+            "심호흡을 한번하고 평정심을 유지하면 확률이 UP!",
+            "상품을 구매하면 확률이 UP!"
+        ]
+        var modal = new ax5.ui.modal();
+        var mask = new ax5.ui.mask();
+        $('#btn-event-tip').click(function(e){
+            mask.open();
+            modal.open({
+                width:320,
+                height:400,
+                onStateChanged: function () {
+                    //console.log(this);
+                    if ( this.state == "close") {
+                        mask.close();
+                    }
+                }
+            }, function () {
+                var tipNum = _.random(_root.tips.length-1);
+                var templ = ''+
+                        '<div class="event event-dark">'+
+                            '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
+                            '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
+                            '<div class="event-links">' +
+                                '<a href="https://www.thegajago.com/mileage" target="_blank" class="btn btn-tip btn-event-mileage">적립금 보러가기</a>' +
+                                '<a href="https://www.thegajago.com/categories/112" target="_blank" class="btn btn-tip btn-event-gajado">첫 페이지로</a>' +
+                                '<a href="https://www.thegajago.com/" target="_blank" class="btn btn-tip btn-event-return">그만하기</a>' +
+                             '</div>' +
+                        '</div>'
+                this.$.body.append(templ);
+
+                //창닫기
+                $('.btn-close').click(function () {
+                    modal.close();
+                    mask.close();
+                });
+
+            });
+        });
+    </script>
+    </body>
+</html>
