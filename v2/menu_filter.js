@@ -1,4 +1,4 @@
-let menuFilter = {
+var menuFilter = {
     "id": 18,
     "groupNm": "신규_지역",
     "sort": 1,

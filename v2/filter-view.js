@@ -5,23 +5,22 @@
  * @param $el jQuery Element list view container
  * @param config Object config value
  */
-
-let FilterView = ($el, config) => {
-    let _config = _.merge({
-        init: {
+var FilterView = function($el, config){
+    var _config = _.merge({
+        init : {
             display: true
         },
         event: {
-            select: function () {
+            select: function() {
                 console.log('FilterView.config.event.select is empty function.');
             }
         }
     }, config);
 
-    let _this = this;
-    let $menu1 = $('<li class="depth1menu"></li>');
-    let $menu2 = $('<li class="depth2menu"></li>');
-    let _menus = [
+    var _this  = this;
+    var $menu1 = $('<li class="depth1menu"></li>');
+    var $menu2 = $('<li class="depth2menu"></li>');
+    var _menus = [
         {
             "fullCode": "01",
             "name": "서울",
@@ -202,20 +201,20 @@ let FilterView = ($el, config) => {
         }
     ];
 
-    function appendMenu1() {
-        let html = ['<ul>'];
-        _.each(_menus, function (menu1) {
-            html.push('<li><a class="depth1menu-cell" data-href="' + menu1.fullCode + '">' + menu1.name + '</a></li>');
+    function appendMenu1(){
+        var html = ['<ul>'];
+        _.each(_menus, function(menu1){
+            html.push('<li><a class="depth1menu-cell" data-href="'+ menu1.fullCode+'">'+ menu1.name +'</a></li>');
         });
         html.push('</ul>');
         $menu1.append(html);
     }
 
-    function appendMenu2(parentFullCode) {
-        let html = ['<ul>'];
-        let menu1 = _.find(_menus, {fullCode: parentFullCode});
-        _.each(menu1.children, function (menu2) {
-            html.push('<li><a class="depth2menu-cell" data-href="' + menu2.fullCode + '">' + menu2.name + '</a></li>');
+    function appendMenu2(parentFullCode){
+        var html = ['<ul>'];
+        var menu1 = _.find(_menus, { fullCode: parentFullCode });
+        _.each(menu1.children, function(menu2){
+            html.push('<li><a class="depth2menu-cell" data-href="'+ menu2.fullCode+'">'+ menu2.name +'</a></li>');
         });
         html.push('</ul>');
 
@@ -226,7 +225,7 @@ let FilterView = ($el, config) => {
      * show control
      * @param isDisplay boolean default value true.
      */
-    let baseDisplay = (isDisplay) => {
+    var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
         } else {
@@ -235,8 +234,8 @@ let FilterView = ($el, config) => {
     };
 
     // init
-    function init() {
-        let html = [
+    function init(){
+        var html = [
             '<div class="filter-box-msg">원하시는 지역을 선택하세요</div>',
             '<ul class="menu"></ul>'
         ];
@@ -247,17 +246,17 @@ let FilterView = ($el, config) => {
 
         appendMenu1();
 
-        $el.on('click', '.depth1menu a', function (e) {
+        $el.on('click', '.depth1menu a', function(e){
             $el.find('.depth1menu li').removeClass('active');
             $(this).parent().addClass('active');
 
-            let code = $(this).attr('data-href');
+            var code = $(this).attr('data-href');
             appendMenu2(code);
 
             e.preventDefault();
         });
 
-        $el.on('click', '.depth2menu a', function (e) {
+        $el.on('click', '.depth2menu a', function(e){
             if (_.isFunction(_config.event.select)) {
                 _config.event.select.call(_this, e);
             }

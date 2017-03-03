@@ -5,26 +5,26 @@
  * @param $el jQuery Element list view container
  * @param config Object config value
  */
-let ListView = ($el, config) => {
-    const _this = this;
-    let _config = _.merge({
-        init: {
+var ListView = function($el, config){
+    var _this = this;
+    var _config = _.merge({
+        init : {
             display: true
         },
         event: {
-            afterShow: function () {
+            afterShow: function(){
                 console.log('ListView.config.event.show is empty function.');
             }
         }
     }, config);
 
-    let $listBox = $('<div class="list-box"></div>');
+    var $listBox = $('<div class="list-box"></div>');
 
     /**
      * show control
      * @param isDisplay boolean default value true.
      */
-    let baseDisplay = (isDisplay) => {
+    var baseDisplay = function(isDisplay) {
         if (isDisplay) {
             $el.show();
             if (_.isFunction(_config.event.afterShow)) {
@@ -35,22 +35,21 @@ let ListView = ($el, config) => {
         }
     };
 
-
     /**
      * rendering data
      */
-    let baseRender = (data) => {
-        let html = [
+    var baseRender = function(data) {
+        var html = [
             '<div id="list-count">',
-            '검색결과 <span class="text-count">', data.list.length, '</span>건',
+                '검색결과 <span class="text-count">', data.list.length, '</span>건',
             '</div>',
             '<ul>'
         ];
-        _.each(data.list, function (item) {
-            let imageSrc = null;
+        _.each(data.list, function(item){
+            var imageSrc = null;
             try {
                 imageSrc = item.listImageJson.list[0].image.src
-            } catch (ex) {
+            } catch(ex) {
                 console.log('Malformed listImageJson.', item);
             }
 
@@ -79,7 +78,7 @@ let ListView = ($el, config) => {
         baseDisplay(true);
     };
 
-    function init() {
+    function init(){
         $el.append($listBox);
         baseDisplay(_config.init.display);
     }
