@@ -250,7 +250,7 @@ const FilterView = function($el, config){
             $el.find('.depth1menu li').removeClass('active');
             $(this).parent().addClass('active');
 
-            var code = $(this).attr('data-href');
+            let code = $(this).attr('data-href');
             appendMenu2(code);
 
             e.preventDefault();

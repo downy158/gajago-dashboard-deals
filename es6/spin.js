@@ -203,8 +203,8 @@
         target.insertBefore(el, target.firstChild || null)
       }
 
-      el.setAttribute('role', 'progressbar')
-      self.lines(el, self.opts)
+      el.setAttribute('role', 'progressbar');
+      self.lines(el, self.opts);
 
       if (!useCssAnimations) {
         // No CSS animation support, use setTimeout() instead
@@ -219,7 +219,7 @@
         ;(function anim () {
           i++;
           for (var j = 0; j < o.lines; j++) {
-            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
+            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity);
 
             self.opacity(el, j * o.direction + start, alpha, o)
           }

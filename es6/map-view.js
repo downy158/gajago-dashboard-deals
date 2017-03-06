@@ -55,12 +55,12 @@ const MapView = function($el, config) {
         } else {
             $el.hide();
         }
-    }
+    };
 
     const baseMapAdjust = (config) => {
         if (config.center) _map.setCenter(new daum.maps.LatLng(config.lat, config.lon));
         if (config.level)  _map.setLevel(config.level);
-    }
+    };
 
     /**
      * rendering data
@@ -196,7 +196,7 @@ const MapView = function($el, config) {
                     // console.log(this);
                     if ( this.state == "close") {
                         mask.close();
-                    };
+                    }
                 }
             }, function () {
                 let _this = this;

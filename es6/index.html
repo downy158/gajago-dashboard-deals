@@ -51,9 +51,9 @@
     <script type="text/javascript" src="ax5modal.min.js"></script>
 
     <script type="text/javascript">
-        var _spinner = (function(){
-            var target = document.getElementById('board-container');
-            var spinner = new Spinner({
+        const _spinner = (function(){
+            let target = document.getElementById('board-container');
+            const spinner = new Spinner({
                 lines: 9 // The number of lines to draw
                 , length: 42 // The length of each line
                 , width: 18 // The line thickness
@@ -87,7 +87,7 @@
         })();
 
         /**@@@ tab @@@@@@@@@@@@@@@@@@@*/
-        var _listView = new ListView($('#list-view'), {
+        const _listView = new ListView($('#list-view'), {
             init: {
                 display: false
             },
@@ -99,38 +99,38 @@
             }
         });
 
-        var _mapView = new MapView($('#map-view'), {
+        const _mapView = new MapView($('#map-view'), {
             init: {
                 display: true
             },
             event: {
-                afterShow: function() {
+                afterShow: () => {
                     $('#btn-show-list').show();
                     $('#btn-show-map').hide();
                 },
-                fit: function() {
-                    var fullHeight = $('body').innerHeight();
-                    var siblingsHeight = $('header').outerHeight();
+                fit: () => {
+                    let fullHeight = $('body').innerHeight();
+                    let siblingsHeight = $('header').outerHeight();
 
                     return {
                         width: $('body').width(),
                         height: (fullHeight - siblingsHeight)
                     };
                 },
-                markerClick: function() {
+                markerClick: () => {
                     $('#btn-show-list').css('bottom', $('.map-info-window').outerHeight() + 10);
                 }
             }
         });
 
-        var _filterView = new FilterView($('#filter-view'), {
+        const _filterView = new FilterView($('#filter-view'), {
             init: {
                 display: false
             },
             event: {
                 select: function(e){
                     _spinner.spin();
-                    var code = $(e.target).attr('data-href');
+                    let code = $(e.target).attr('data-href');
                     $.get('https://beta.thegajago.com/map/region/' + code, function(deals){
                         _cachedDealResponse = deals;
                         _mapView.render(_cachedDealResponse);
@@ -140,7 +140,7 @@
                 }
             }
         });
-        var _cachedDealResponse = {};
+        let _cachedDealResponse = {};
 
         $('.menu-tab a').bind("click",function(e){
             _cachedDealResponse = {}; // cache clear
@@ -182,7 +182,7 @@
         function loadMyAreaDeals(position) {
             if (!position) return;
 
-            var params = { lat: position.coords.latitude, lon: position.coords.longitude };
+            let params = { lat: position.coords.latitude, lon: position.coords.longitude };
             $.get('https://beta.thegajago.com/map/deals', params, function(deals){
                 _cachedDealResponse = {
                     list: deals,
@@ -213,15 +213,15 @@
         /**
          * event 보물찾기 2016-10-18
          */
-        var _root = this;
+        const _root = this;
         _root.tips = [
             "내 위치 설정을 ON하면 보물찾기가 쉬워져!",
             "SNS에 보물찾기 이벤트를 공유하면 확률이 UP!",
             "심호흡을 한번하고 평정심을 유지하면 확률이 UP!",
             "상품을 구매하면 확률이 UP!"
         ]
-        var modal = new ax5.ui.modal();
-        var mask = new ax5.ui.mask();
+        const modal = new ax5.ui.modal();
+        const mask = new ax5.ui.mask();
         $('#btn-event-tip').click(function(e){
             mask.open();
             modal.open({
@@ -234,8 +234,8 @@
                     }
                 }
             }, function () {
-                var tipNum = _.random(_root.tips.length-1);
-                var templ = ''+
+                let tipNum = _.random(_root.tips.length-1);
+                let templ = ''+
                         '<div class="event event-dark">'+
                             '<button type="button" class="btn btn-close"><img alt="close" src="../images/close-light.png"></button>' +
                             '<div class="event-tip"><img alt="" src="../images/ico-treasure.png">' + _root.tips[tipNum] + '</div>' +
